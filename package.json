@@ -1,0 +1,38 @@
+{
+  "name": "keybase-installer",
+  "version": "0.0.0",
+  "description": "Trusted installer/updater for keybase",
+  "scripts": {
+    "test": "make test"
+  },
+  "bin" : {
+    "keybase-installer" : "./bin/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/keybase/node-installer"
+  },
+  "dependencies" : {
+    "argparse"           : "~0.1.15",
+    "gpg-wrapper"        : "~0.0.1",
+    "iced-coffee-script" : "~1.6.3-j",
+    "iced-data-structures" : "~0.0.5",
+    "iced-error"         : "~0.0.6",
+    "iced-utils"         : ">=0.1.3",
+    "request"            : "~2.30.0"
+  },
+  "bundleDependencies" : [
+    "argparse",
+    "gpg-wrapper",
+    "iced-coffee-script",
+    "iced-data-structures",
+    "iced-error",
+    "iced-utils",
+    "request"
+  ],
+  "author": "Maxwell Krohn <themax@gmail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/keybase/node-installer/issues"
+  }
+}
