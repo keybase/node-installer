@@ -15,7 +15,8 @@ $(BUILD_STAMP): \
 	lib/main.js \
 	lib/getopt.js \
 	lib/installer.js \
-	lib/base.js 
+	lib/base.js \
+        lib/key.js
 	date > $@
 
 clean:
