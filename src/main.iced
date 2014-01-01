@@ -1,6 +1,8 @@
 {getopt} = require './getopt'
 package_json = require '../package.json'
 {make_esc} = require 'iced-error'
+{BaseCommand} = require './base'
+{Installer} = require './installer'
 gpg = require 'gpg-wrapper'
 
 ##========================================================================
@@ -8,12 +10,6 @@ gpg = require 'gpg-wrapper'
 find_bin = () ->
   for k,v of package_json.bin
     return k
-
-##========================================================================
-
-exports.BaseCommand = class BaseCommand
-
-  constructor : (@argv) ->
 
 ##========================================================================
 
@@ -27,7 +23,7 @@ class VersionCommand extends BaseCommand
 
 class HelpCommand extends BaseCommand
 
-  constructor : (@err = null) ->
+  constructor : (@argv, @err = null) ->
 
   run : (cb) ->
     console.log """usage: #{find_bin()} [<keybase-version>]
@@ -67,9 +63,9 @@ class Main
     else if @argv.get("h", "?", "help")
       @cmd = new HelpCommand()
     else if @argv.get().length > 1
-      @cmd = new HelpCommand (new Error "Usage error: only zero or one argument allowed")
+      @cmd = new HelpCommand @argv, (new Error "Usage error: only zero or one argument allowed")
     else
-      err = new Error "unimplemented"
+      @cmd = new Installer @argv
     cb err
 
   #-----------
