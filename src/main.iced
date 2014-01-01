@@ -17,10 +17,26 @@ exports.BaseCommand = class BaseCommand
 
 ##========================================================================
 
-class AboutCommand extends BaseCommand
+class VersionCommand extends BaseCommand
 
   run : (cb) ->
     console.log "#{find_bin()} v#{package_json.version}"
+    cb null
+
+##========================================================================
+
+class HelpCommand extends BaseCommand
+
+  run : (cb) ->
+    console.log """usage: #{find_bin()} [<keybase-version>]
+
+\tUpgrade or install a version of keybase.  Check signatures for Keybase.io's signing
+\tkey. You can provide a specific version or by default you'll get the most recent
+\tversion.
+
+\tVersion: #{package_json.version}
+"""
+
     cb null
 
 ##========================================================================
@@ -41,31 +57,14 @@ class Main
   #-----------
 
   parse_args : (cb) ->
-    @argv = getopt @process.argv[2...], { flags : "hv?", opts : "" }
-
-  #-----------
-
-  arg_parse_init : () ->
-
-    @ap = new ArgumentParser
-      addHelp : true
-      version : package_json.version
-      description : "keybase.io CLI installer/updater"
-      prog : find_bin()
-
-    add_option_dict @ap, Main.OPTS
-    null
-
-  #-----------
-
-  parse_args : (cb) ->
-    err = @arg_parse_init()
-    if not err?
-      @argv = @ap.parse_args process.argv[2...]
-      if @argv.opts.about
-        @cmd = new AboutCommand @argv
-      else
-        err = new Error "unimplemented command"
+    err = null
+    @argv = getopt process.argv[2...], { flags : [ "h", "v", "help", "version", "?" ] }
+    if @argv.get("v", "version")
+      @cmd = new VersionCommand()
+    else if @argv.get("h", "?", "help")
+      @cmd = new HelpCommand()
+    else
+      err = new Error "unimplemented!"
     cb err
 
   #-----------
