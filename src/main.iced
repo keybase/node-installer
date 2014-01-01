@@ -1,28 +1,7 @@
-{ArgumentParser} = require 'argparse'
+{getopt} = require './getopt'
 package_json = require '../package.json'
 {make_esc} = require 'iced-error'
 gpg = require 'gpg-wrapper'
-
-##========================================================================
-
-rmkey = (obj, key) ->
-  ret = obj[key]
-  delete obj[key]
-  ret
-#---------
-
-add_option_dict =  (ap, d) ->
-  for k,v of d
-    add_option_kv ap,k,v
-
-#-------------
-
-add_option_kv = (ap, k, d)->
-  names = [ k ]
-  names.push a if (a = rmkey d, 'alias')
-  names = names.concat as if (as = rmkey d, 'aliases')
-  names = ("-#{if n.length > 1 then '-' else ''}#{n}" for n in names)
-  ap.addArgument names, d
 
 ##========================================================================
 
@@ -61,6 +40,11 @@ class Main
 
   #-----------
 
+  parse_args : (cb) ->
+    @argv = getopt @process.argv[2...], { flags : "hv?", opts : "" }
+
+  #-----------
+
   arg_parse_init : () ->
 
     @ap = new ArgumentParser
@@ -77,8 +61,8 @@ class Main
   parse_args : (cb) ->
     err = @arg_parse_init()
     if not err?
-      @argv = @ap.parseArgs process.argv[2...]
-      if @argv.about
+      @argv = @ap.parse_args process.argv[2...]
+      if @argv.opts.about
         @cmd = new AboutCommand @argv
       else
         err = new Error "unimplemented command"

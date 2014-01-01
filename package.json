@@ -13,7 +13,6 @@
     "url": "git://github.com/keybase/node-installer"
   },
   "dependencies" : {
-    "argparse"           : "~0.1.15",
     "gpg-wrapper"        : "~0.0.1",
     "iced-coffee-script" : "~1.6.3-j",
     "iced-data-structures" : "~0.0.5",
@@ -22,7 +21,6 @@
     "request"            : "~2.30.0"
   },
   "bundleDependencies" : [
-    "argparse",
     "gpg-wrapper",
     "iced-coffee-script",
     "iced-data-structures",
