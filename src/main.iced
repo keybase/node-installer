@@ -27,6 +27,8 @@ class VersionCommand extends BaseCommand
 
 class HelpCommand extends BaseCommand
 
+  constructor : (@err = null) ->
+
   run : (cb) ->
     console.log """usage: #{find_bin()} [<keybase-version>]
 
@@ -35,9 +37,10 @@ class HelpCommand extends BaseCommand
 \tversion.
 
 \tVersion: #{package_json.version}
+
 """
 
-    cb null
+    cb @err
 
 ##========================================================================
 
@@ -63,8 +66,10 @@ class Main
       @cmd = new VersionCommand()
     else if @argv.get("h", "?", "help")
       @cmd = new HelpCommand()
+    else if @argv.get().length > 1
+      @cmd = new HelpCommand (new Error "Usage error: only zero or one argument allowed")
     else
-      err = new Error "unimplemented!"
+      err = new Error "unimplemented"
     cb err
 
   #-----------

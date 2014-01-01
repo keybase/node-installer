@@ -7,9 +7,11 @@ class Result
     @opts = {}
 
   get : (names...) ->
-    for name in names
-      if (val = @opts[name])? then return val
-    return null
+    if names.length is 0 then return @args
+    else
+      for name in names
+        if (val = @opts[name])? then return val
+      return null
 
 #======================================================================
 
