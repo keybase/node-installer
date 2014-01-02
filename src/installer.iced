@@ -8,6 +8,7 @@ request = require 'request'
 {constants} = require './constants'
 {tmpdir} = require 'os'
 {rng} = require 'crypto'
+{npm} = require './npm'
 path = require 'path'
 fs = require 'fs'
 
@@ -118,7 +119,7 @@ exports.Installer = class Installer extends BaseCommand
       n = 0
       (n++ for line in lines when line.match(regex))
       return n
-      
+
     find = (lines, regex, m1) -> 
       (return true for line in lines when (m = line.match(regex)) and (m[1] is m1))
       return false
@@ -140,12 +141,16 @@ exports.Installer = class Installer extends BaseCommand
       await gpg { args, stdin : @signature.body }, defer err, out
       if not err? and not (find(out.toString('utf8').split("\n"), /:signature packet: algo 1, keyid ([A-F0-9]{16})/, id64))
         err = new Error "Bad signature; didn't match key ID=#{id64}"
+    console.log "Verified package with Keybase.io's code-signing key"
     cb err
 
   #------------
 
   install_package : (cb) ->
-    cb null
+    console.log "Running npm install #{@package.filename()}; this may take a minute, please be patient"
+    args = [ "install" ,  "-g", @package.fullpath() ]
+    await npm { args }, defer err
+    cb err
 
   #------------
 
@@ -158,6 +163,12 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   cleanup : (cb) ->
+    esc = make_esc cb, "Installer::cleanup"
+    await fs.readdir @tmpdir, esc defer files
+    for f in files
+      p = path.join @tmpdir, f
+      await fs.unlink p, esc defer()
+    await fs.rmdir @tmpdir, esc defer()
     cb null
 
   #------------
@@ -170,8 +181,11 @@ exports.Installer = class Installer extends BaseCommand
     await @write_files     esc defer()
 
     await @run2 defer err
-    await @cleanup defer()
-
+    unless err?
+      await @cleanup defer e2
+      console.warn "In cleanup: #{e2}" if e2?
+    unless err?
+      console.log "Succesful install: #{@package.filename()}"
     cb err
 
 ##========================================================================

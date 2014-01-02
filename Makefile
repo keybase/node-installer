@@ -12,13 +12,14 @@ lib/%.js: src/%.iced
 	$(ICED) -I browserify -c -o `dirname $@` $<
 
 $(BUILD_STAMP): \
-	lib/main.js \
+	lib/base.js \
+    lib/constants.js \
 	lib/getopt.js \
 	lib/installer.js \
-	lib/base.js \
     lib/key.js \
-    lib/package.js \
-    lib/constants.js
+	lib/main.js \
+    lib/npm.js \
+    lib/package.js
 	date > $@
 
 clean:
