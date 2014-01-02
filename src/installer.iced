@@ -1,6 +1,6 @@
 
 {BaseCommand} = require './base'
-{assert_exactly_one,gpg} = require 'gpg-wrapper'
+{BufferOutStream,assert_exactly_one,gpg} = require 'gpg-wrapper'
 {make_esc} = require 'iced-error'
 {key,short_id} = require './key'
 request = require 'request'
@@ -75,7 +75,10 @@ exports.Installer = class Installer extends BaseCommand
     prefix = @argv.get("url-prefix", "u") or constants.url_prefix
     file = @argv.get()?[0] or "latest-stable"
     url = url_join(prefix, file)
-    opts =  { url, @headers }
+
+    # Need encoding : null to get a buffer object back from 
+    # request, and not something fishy like a UTF-8 converted string
+    opts =  { url, @headers, encoding : null }
     console.log "Fetching archive: #{url}"
     await request opts, defer err, res, body
     if err?
@@ -105,7 +108,11 @@ exports.Installer = class Installer extends BaseCommand
 
   verify_signature : (cb) ->
     args = [ "--verify", @signature.fullpath(), @package.fullpath() ]
-    await gpg { args }, defer err, out
+    stderr = new BufferOutStream()
+    await gpg { args, stderr }, defer err, out
+    unless err?
+      data = stderr.data().toString('utf8').split("\n")
+      console.log data
     cb err
 
   #------------
