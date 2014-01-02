@@ -34,7 +34,7 @@ exports.Installer = class Installer extends BaseCommand
     prefix = @argv.get("url-prefix", "u") or constants.url_prefix
     file = @argv.get()?[0] or "latest-stable"
     url = url_join(prefix, file)
-    headers = { "X-Keybase-Installer" :  fullname() }
+    headers = { "X-Keybase-Installer" : fullname() }
     opts =  { url, headers }
     console.log "Fetching archive: #{url}"
     await request opts, defer err, res, body
