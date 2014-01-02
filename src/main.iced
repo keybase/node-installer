@@ -1,5 +1,5 @@
 {getopt} = require './getopt'
-package_json = require '../package.json'
+{fullname,bin,version} = require './package'
 {make_esc} = require 'iced-error'
 {BaseCommand} = require './base'
 {Installer} = require './installer'
@@ -7,16 +7,10 @@ gpg = require 'gpg-wrapper'
 
 ##========================================================================
 
-find_bin = () ->
-  for k,v of package_json.bin
-    return k
-
-##========================================================================
-
 class VersionCommand extends BaseCommand
 
   run : (cb) ->
-    console.log "#{find_bin()} v#{package_json.version}"
+    console.log fullname()
     cb null
 
 ##========================================================================
@@ -26,13 +20,13 @@ class HelpCommand extends BaseCommand
   constructor : (@argv, @err = null) ->
 
   run : (cb) ->
-    console.log """usage: #{find_bin()} [<keybase-version>]
+    console.log """usage: #{bin()} [<keybase-version>]
 
 \tUpgrade or install a version of keybase.  Check signatures for Keybase.io's signing
 \tkey. You can provide a specific version or by default you'll get the most recent
 \tversion.
 
-\tVersion: #{package_json.version}
+\tVersion: #{version()}
 
 """
 
