@@ -181,7 +181,7 @@ exports.Installer = class Installer extends BaseCommand
     await @write_files     esc defer()
 
     await @run2 defer err
-    unless err?
+    if not err? and not @argv.get("C", "skip-cleanup")
       await @cleanup defer e2
       console.warn "In cleanup: #{e2}" if e2?
     unless err?

@@ -4,6 +4,7 @@
 {BaseCommand} = require './base'
 {Installer} = require './installer'
 gpg = require 'gpg-wrapper'
+{constants} = require './constants'
 
 ##========================================================================
 
@@ -20,13 +21,21 @@ class HelpCommand extends BaseCommand
   constructor : (@argv, @err = null) ->
 
   run : (cb) ->
-    console.log """usage: #{bin()} [<keybase-version>]
+    console.log """usage: #{bin()} [-vh?] [-C] [-u <url-prefix>] [<keybase-version>]
 
 \tUpgrade or install a version of keybase.  Check signatures for Keybase.io's signing
 \tkey. You can provide a specific version or by default you'll get the most recent
 \tversion.
 
-\tVersion: #{version()}
+Boolean Flags:
+\t-v/--version       -- Print the version and quit
+\t-h/--help          -- Print the help message and quit
+\t-C/--skip-cleanup  -- Don't delete temporary files after install
+
+Options:
+\t-u/--url-prefix    -- Specify a URL prefix for fetching (default: #{constants.url_prefix})
+
+Version: #{version()}
 
 """
 
@@ -51,7 +60,16 @@ class Main
 
   parse_args : (cb) ->
     err = null
-    @argv = getopt process.argv[2...], { flags : [ "h", "v", "help", "version", "?" ] }
+    flags = [
+      "h"
+      "v"
+      "help"
+      "version"
+      "?"
+      "skip-cleanup"
+      "C"
+    ]
+    @argv = getopt process.argv[2...], { flags }
     if @argv.get("v", "version")
       @cmd = new VersionCommand()
     else if @argv.get("h", "?", "help")
