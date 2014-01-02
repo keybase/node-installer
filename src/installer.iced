@@ -25,9 +25,10 @@ url_join = (args...) ->
 class FileBundle 
   constructor : (@uri, @body) ->
   filename : () -> path.basename(@uri.path)
+  fullpath : () -> @_fullpath
 
   write : (dir, encoding, cb) ->
-    p = path.join(dir, @filename())
+    p = @_fullpath = path.join(dir, @filename())
     await fs.writeFile p, @body, { mode : 0o400, encoding }, defer err
     cb err
 
@@ -103,7 +104,9 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   verify_signature : (cb) ->
-    cb null
+    args = [ "--verify", @signature.fullpath(), @package.fullpath() ]
+    await gpg { args }, defer err, out
+    cb err
 
   #------------
 
