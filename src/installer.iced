@@ -2,7 +2,7 @@
 {BaseCommand} = require './base'
 {BufferOutStream,assert_exactly_one,gpg} = require 'gpg-wrapper'
 {make_esc} = require 'iced-error'
-{key,short_id} = require './key'
+{signer_id_email,key,id32,id64} = require './key'
 request = require 'request'
 {fullname} = require './package'
 {constants} = require './constants'
@@ -65,8 +65,15 @@ exports.Installer = class Installer extends BaseCommand
     keybuf = new Buffer key, 'utf8'
     args = [ "--import" ]
     await gpg { args, stdin : keybuf, quiet : true }, esc defer out
-    await assert_exactly_one short_id, esc defer()
+    await assert_exactly_one id32, esc defer()
     cb null
+
+  #------------
+
+  request : (url, cb) ->
+    opts = { url, @headers, encoding : null }
+    await request opts, defer err, res, body
+    cb err, res, body
 
   #------------
 
@@ -78,9 +85,8 @@ exports.Installer = class Installer extends BaseCommand
 
     # Need encoding : null to get a buffer object back from 
     # request, and not something fishy like a UTF-8 converted string
-    opts =  { url, @headers, encoding : null }
     console.log "Fetching archive: #{url}"
-    await request opts, defer err, res, body
+    await @request url, defer err, res, body
     if err?
       err = new Error "Error in fetch: #{err.message}"
     else if (sc = res.statusCode) isnt 200
@@ -95,7 +101,7 @@ exports.Installer = class Installer extends BaseCommand
     err = null
     url = @package.uri.format() + ".asc"
     console.log "Fetching signature: #{url}"
-    await request { url, @headers }, defer err, res, body
+    await @request url, defer err, res, body
     if err?
       err = new Error "Error in fetch: #{err.message}"
     else if (sc = res.statusCode) isnt 200
@@ -107,12 +113,33 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   verify_signature : (cb) ->
+
+    count_lines = (lines, regex) ->
+      n = 0
+      (n++ for line in lines when line.match(regex))
+      return n
+      
+    find = (lines, regex, m1) -> 
+      (return true for line in lines when (m = line.match(regex)) and (m[1] is m1))
+      return false
+
     args = [ "--verify", @signature.fullpath(), @package.fullpath() ]
     stderr = new BufferOutStream()
     await gpg { args, stderr }, defer err, out
     unless err?
       data = stderr.data().toString('utf8').split("\n")
-      console.log data
+      if (count_lines(data, /Signature made.*using.*key.*ID/) isnt 1) or
+           (count_lines(data, /Good signature from/) isnt 1)
+        err = new Error "Wrong number of signatures; expected exactly 1"
+      else if not find(data, /Signature made.*using RSA key ID ([A-F0-9]{8})/, id32)
+        err = new Error "Didn't get a signature with short_id #{short_id}"
+      else if not find(data, /Good signature from.*<(\S+)>/, signer_id_email)
+        err = new Error "Didn't get a signature from email=#{signer_id_email}"
+    unless err?
+      args = [ "--list-packets" ]
+      await gpg { args, stdin : @signature.body }, defer err, out
+      if not err? and not (find(out.toString('utf8').split("\n"), /:signature packet: algo 1, keyid ([A-F0-9]{16})/, id64))
+        err = new Error "Bad signature; didn't match key ID=#{id64}"
     cb err
 
   #------------

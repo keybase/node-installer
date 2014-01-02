@@ -1,6 +1,8 @@
 
-exports.short_id = "656D16C7"
-exports.fingerprint = "222B 85B0 F90B E2D2 4CFE  B93F 4748 4E50 656D 16C7"
+exports.id32 = "656D16C7"
+exports.id64 = "47484E50656D16C7"
+exports.id160 = "222B 85B0 F90B E2D2 4CFE  B93F 4748 4E50 656D 16C7"
+exports.signer_id_email = "code@keybase.io"
 
 exports.key = """
 -----BEGIN PGP PUBLIC KEY BLOCK-----

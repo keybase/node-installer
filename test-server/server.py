@@ -2,14 +2,14 @@ import SimpleHTTPServer
 import SocketServer
 import re
 
-PORT = 8002
+PORT = 8000
 
 class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     latest_stable = "keybase-0.0.0.tgz"
 
     def do_GET(self):
-        if self.path == "/latest-stable"
+        if self.path == "/latest-stable":
             self.send_response(301)
             self.send_header('Location',"http://localhost:%d/%s" % (PORT, self.latest_stable))
             self.end_headers()
