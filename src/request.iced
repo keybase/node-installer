@@ -83,8 +83,8 @@ class Request
   _launch : () ->
     opts = @_make_opts()
     req = https.request opts, (res) =>
-      if @_opts.progress and (l = res.headers?["content-length"])? and 
-         not(isNaN(l = parseInt(l,10))) and l > 50000
+      if @_opts.progress? and (l = res.headers?["content-length"])? and 
+         not(isNaN(l = parseInt(l,10))) and l > @_opts.progress
         @_bar = new ProgressBar "Download #{@url.path} [:bar] :percent :etas (#{l} bytes total)", {
           complete : "=",
           incomplete : ' ',
@@ -116,7 +116,7 @@ single = (opts, cb) -> (new Request opts).run cb
 #=============================================================================
 
 module.exports = request = (opts, cb) ->
-  opts.progress = true
+  opts.progress = 50000
   urls = {}
   lim = opts.maxRedirects or 10
   err = new Error "Too many redirects"
