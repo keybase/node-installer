@@ -1,6 +1,6 @@
 
 https = require 'https'
-uri = require 'url'
+{parse} = require 'url'
 
 #========================================================================
 
@@ -46,12 +46,13 @@ cT7Yh09F0QpFUd0ymEfv
 
 #========================================================================
 
-class Get
+class Request
 
-  constructor : ({@uri, @headers}) ->
+  constructor : ({url, @headers}) ->
     @_res = null
     @_data = []
     @_err = null
+    @url = if typeof(url) is 'string' then parse(url) else url
 
   #--------------------
 
@@ -63,9 +64,9 @@ class Get
 
   _make_opts : () ->
     opts = 
-      host : @uri.hostname
-      port : @uri.port or 443
-      path : @uri.path
+      host : @url.hostname
+      port : @url.port or 443
+      path : @url.path
       method : 'GET'
       ca : [ cacert ]
       headers : @headers
@@ -95,7 +96,7 @@ class Get
 
 #=============================================================================
 
-exports.get = get = ({uri, headers}, cb) -> (new Get { uri, headers}).run cb
+module.exports = request = (opts, cb) -> (new Request opts).run cb
 
 #============================================================================
 
