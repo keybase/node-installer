@@ -19,7 +19,8 @@ $(BUILD_STAMP): \
     lib/key.js \
 	lib/main.js \
     lib/npm.js \
-    lib/package.js
+    lib/package.js \
+	lib/request.js
 	date > $@
 
 clean:
