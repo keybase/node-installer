@@ -1,6 +1,7 @@
 
 https = require 'https'
 {parse} = require 'url'
+ProgressBar = require 'progress'
 
 #========================================================================
 
@@ -48,11 +49,14 @@ cT7Yh09F0QpFUd0ymEfv
 
 class Request
 
-  constructor : ({url, @headers}) ->
+  constructor : ({url, uri, @headers, progress}) ->
+    url = url or uri
     @_res = null
     @_data = []
     @_err = null
-    @url = if typeof(url) is 'string' then parse(url) else url
+    @uri = @url = if typeof(url) is 'string' then parse(url) else url
+    @_bar = null
+    @_opts = { progress }
 
   #--------------------
 
@@ -79,8 +83,19 @@ class Request
   _launch : () ->
     opts = @_make_opts()
     req = https.request opts, (res) =>
+      if @_opts.progress and (l = res.headers?["content-length"])? and 
+         not(isNaN(l = parseInt(l,10))) and l > 50000
+        @_bar = new ProgressBar "Download #{@url.path} [:bar] :percent :etas (#{l} bytes total)", {
+          complete : "=",
+          incomplete : ' ',
+          width : 50,
+          total : l
+        }
       @_res = res
-      res.on 'data', (d) => @_data.push d
+      res.request = @
+      res.on 'data', (d) => 
+        @_data.push d
+        @_bar?.tick(d.length)
       res.on 'end',  () => @_finish()
     req.end()
     req.on 'error', (e) => 
@@ -96,7 +111,25 @@ class Request
 
 #=============================================================================
 
-module.exports = request = (opts, cb) -> (new Request opts).run cb
+single = (opts, cb) -> (new Request opts).run cb
+
+#=============================================================================
+
+module.exports = request = (opts, cb) ->
+  opts.progress = true
+  urls = {}
+  lim = opts.maxRedirects or 10
+  err = new Error "Too many redirects"
+  res = body = null
+  for i in [0...lim] 
+    await single opts, defer err, res, body
+    if not (res.statusCode in [301, 302]) then break
+    else if not (url = res.headers?.location)?
+      err = new Error "Can't find a location in header for redirect"
+      break
+    else 
+      opts.url = url
+  cb err, res, body
 
 #============================================================================
 
