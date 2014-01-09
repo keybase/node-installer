@@ -23,6 +23,10 @@ url_join = (args...) ->
 
 ##========================================================================
 
+to_base64x = (x) -> x.toString('base64').replace(/\+/g, '_').replace(/\//g, '-').replace(/\=/g, '')
+
+##========================================================================
+
 class FileBundle 
   constructor : (@uri, @body) ->
   filename : () -> path.basename(@uri.path)
@@ -44,7 +48,7 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   make_tempdir : (cb) ->
-    r = rng(10).toString("hex")
+    r = to_base64x rng(12)
     @tmpdir = path.join(tmpdir(), "keybase_install_#{r}");
     await fs.mkdir @tmpdir, 0o700, defer err
     console.log "Made temporary directory: #{@tmpdir}"
