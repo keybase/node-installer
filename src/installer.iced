@@ -2,7 +2,7 @@
 {BaseCommand} = require './base'
 {BufferOutStream,GPG} = require 'gpg-wrapper'
 {make_esc} = require 'iced-error'
-{signer_id_email,key,id32,id64} = require './key'
+{signer_id_email,key,id64} = require './key'
 request = require './request'
 {fullname} = require './package'
 {constants} = require './constants'
@@ -70,7 +70,7 @@ exports.Installer = class Installer extends BaseCommand
     keybuf = new Buffer key, 'utf8'
     args = [ "--import" ]
     await @gpg.run { args, stdin : keybuf, quiet : true }, esc defer out
-    await @gpg.assert_exactly_one id32, esc defer()
+    await @gpg.assert_exactly_one id64, esc defer()
     cb null
 
   #------------
@@ -128,16 +128,20 @@ exports.Installer = class Installer extends BaseCommand
       (return true for line in lines when (m = line.match(regex)) and (m[1] is m1))
       return false
 
-    args = [ "--verify", @signature.fullpath(), @package.fullpath() ]
+    args = [ 
+      "--verify", "--keyid-format", "long", 
+      @signature.fullpath(), @package.fullpath() 
+    ]
     stderr = new BufferOutStream()
     await @gpg.run { args, stderr }, defer err, out
     unless err?
       data = stderr.data().toString('utf8').split("\n")
-      if (count_lines(data, /Signature made.*using.*key.*ID/) isnt 1) or
+      if (count_lines(data, /Signature made/) isnt 1) or
+           (count_lines(data, /using RSA key/) isnt 1) or
            (count_lines(data, /Good signature from/) isnt 1)
         err = new Error "Wrong number of signatures; expected exactly 1"
-      else if not find(data, /Signature made.*using RSA key ID ([A-F0-9]{8})/, id32)
-        err = new Error "Didn't get a signature with short_id #{short_id}"
+      else if not find(data, /using RSA key ([A-F0-9]{16})/, id64)
+        err = new Error "Didn't get a signature with key ID #{id64}"
       else if not find(data, /Good signature from.*<(\S+)>/, signer_id_email)
         err = new Error "Didn't get a signature from email=#{signer_id_email}"
     unless err?
