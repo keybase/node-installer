@@ -1,6 +1,6 @@
 
 {BaseCommand} = require './base'
-{BufferOutStream,assert_exactly_one,gpg} = require 'gpg-wrapper'
+{BufferOutStream,GPG} = require 'gpg-wrapper'
 {make_esc} = require 'iced-error'
 {signer_id_email,key,id32,id64} = require './key'
 request = require './request'
@@ -69,8 +69,8 @@ exports.Installer = class Installer extends BaseCommand
     esc = make_esc cb, "Installer::import_key"
     keybuf = new Buffer key, 'utf8'
     args = [ "--import" ]
-    await gpg { args, stdin : keybuf, quiet : true }, esc defer out
-    await assert_exactly_one id32, esc defer()
+    await @gpg.run { args, stdin : keybuf, quiet : true }, esc defer out
+    await @gpg.assert_exactly_one id32, esc defer()
     cb null
 
   #------------
@@ -130,7 +130,7 @@ exports.Installer = class Installer extends BaseCommand
 
     args = [ "--verify", @signature.fullpath(), @package.fullpath() ]
     stderr = new BufferOutStream()
-    await gpg { args, stderr }, defer err, out
+    await @gpg.run { args, stderr }, defer err, out
     unless err?
       data = stderr.data().toString('utf8').split("\n")
       if (count_lines(data, /Signature made.*using.*key.*ID/) isnt 1) or
@@ -142,7 +142,7 @@ exports.Installer = class Installer extends BaseCommand
         err = new Error "Didn't get a signature from email=#{signer_id_email}"
     unless err?
       args = [ "--list-packets" ]
-      await gpg { args, stdin : @signature.body }, defer err, out
+      await @gpg.run { args, stdin : @signature.body }, defer err, out
       if not err? and not (find(out.toString('utf8').split("\n"), /:signature packet: algo 1, keyid ([A-F0-9]{16})/, id64))
         err = new Error "Bad signature; didn't match key ID=#{id64}"
     console.log "Verified package with Keybase.io's code-signing key"
@@ -178,6 +178,7 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   run : (cb) ->
+    @gpg = new GPG
     esc = make_esc cb, "Installer::run"
     await @import_key      esc defer()
     await @fetch_package   esc defer()
