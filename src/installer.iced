@@ -11,6 +11,7 @@ request = require './request'
 {npm} = require './npm'
 path = require 'path'
 fs = require 'fs'
+{SetupKeyRunner} = require './setup_key'
 
 ##========================================================================
 
@@ -162,7 +163,7 @@ exports.Installer = class Installer extends BaseCommand
 
   #------------
 
-  run2 : (cb) ->
+  run_old_2 : (cb) ->
     esc = make_esc cb, "Installer::run"  
     await @verify_signature esc defer()
     await @install_package esc defer()
@@ -182,20 +183,42 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   run : (cb) ->
+    await @_run2 defer err
+    unless @argv.get("C", "skip-cleanup")
+      await @cleanup defer e2
+      console.warn "In cleanup: #{e2}" if e2?
+    if not err? and @package?
+      console.log "Succesful install: #{@package.filename()}"
+    cb err
+
+  #------------
+
+  setup_key : (cb) ->
+    sk = new SetupKeyRunner()
+    await sk.run defer err
+    cb err
+
+  #------------
+
+  _run2 : (cb) ->
+    esc = make_esc cb, "Installer::_run2"
+    await @setup_key        esc defer()
+    await @get_index        esc defer()
+    await @upgrade_key      esc defer()
+    await @upgrade_software esc defer()
+    cb null
+
+  #------------
+
+  run_old : (cb) ->
     @gpg = new GPG
     esc = make_esc cb, "Installer::run"
     await @import_key      esc defer()
     await @fetch_package   esc defer()
     await @fetch_signature esc defer()
     await @write_files     esc defer()
-
     await @run2 defer err
-    if not err? and not @argv.get("C", "skip-cleanup")
-      await @cleanup defer e2
-      console.warn "In cleanup: #{e2}" if e2?
-    unless err?
-      console.log "Succesful install: #{@package.filename()}"
-    cb err
+    cb null
 
 ##========================================================================
 
