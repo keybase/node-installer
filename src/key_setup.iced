@@ -38,8 +38,8 @@ exports.KeySetup = class KeySetup
   #------------
 
   install_prepackaged_key : (cb) ->
-    ik = new InstallKey @config, keyset
-    await ik.run esc defer err
+    ki = new KeyInstall @config, keyset
+    await ki.run esc defer err
     cb err
 
   #------------

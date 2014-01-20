@@ -3,10 +3,11 @@
 {make_esc} = require 'iced-error'
 {BaseCommand} = require './base'
 {Installer} = require './installer'
-gpg = require 'gpg-wrapper'
+{keyring} = require 'gpg-wrapper'
 {constants} = require './constants'
 keyset = require './keyset'
 {json_stringify_sorted} = require('iced-utils').util
+log = require './log'
 
 ##========================================================================
 
@@ -117,6 +118,7 @@ class Main
   setup : (cb) ->
     esc = make_esc cb, "setup"
     await @parse_args esc defer()
+    keyring.init { log }
     cb null
 
 ##========================================================================
