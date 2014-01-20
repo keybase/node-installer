@@ -11,9 +11,9 @@ request = require './request'
 {npm} = require './npm'
 path = require 'path'
 fs = require 'fs'
-{SetupKeyRunner} = require './setup_key'
+{KeySetup} = require './key_setup'
 
-
+##========================================================================
 
 to_base64x = (x) -> x.toString('base64').replace(/\+/g, '_').replace(/\//g, '-').replace(/\=/g, '')
 
@@ -183,8 +183,8 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   setup_key : (cb) ->
-    sk = new SetupKeyRunner @config
-    await sk.run defer err
+    ks = new KeySetup @config
+    await ks.run defer err
     cb err
 
   #------------

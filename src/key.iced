@@ -1,12 +1,8 @@
 module.exports = 
-  version : 1
-  index : {}
-  code : 
-    id32 : "656D16C7"
-    id64 : "47484E50656D16C7"
-    id160 : "222B 85B0 F90B E2D2 4CFE  B93F 4748 4E50 656D 16C7"
-    signer_id_email : "code@keybase.io"
-    key : """
+  keys : 
+    code : 
+      fingerprint : "222B85B0F90BE2D24CFEB93F47484E50656D16C7"
+      key : """
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
 Comment: GPGTools - http://gpgtools.org
@@ -72,3 +68,65 @@ kmnrUWd2WLYQQ8ROJDPJKPYUKXam03UJXZidoJO3q10K/XeP2GohBf5q0imfUw==
 =QoPC
 -----END PGP PUBLIC KEY BLOCK-----
 """
+      userid : "Keybase.io Code Signing (v1) <code@keybase.io>"
+    index:
+      fingerprint : "5D4D8FC2FE2BA87FABB596E5E02E3DA9416F9F1B"
+      key : """
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
+Comment: GPGTools - https://gpgtools.org
+
+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
+Py033CExDiDzdwB+ob2fICgLrWTvk47QX/g=
+=ReSP
+-----END PGP PUBLIC KEY BLOCK-----
+""" 
+      userid : "Keybase.io Index Signing (v1) <index@keybase.io>"
+  revocation : null
+  self_sig : null
+  version : 1

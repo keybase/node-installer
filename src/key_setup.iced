@@ -10,7 +10,7 @@ key = require './key'
 
 ##========================================================================
 
-exports.SetupKeyRunner = class SetupKeyRunner
+exports.KeySetup = class KeySetup
 
   constructor : (@config) ->
     @master = keyring.master_ring()
@@ -22,9 +22,7 @@ exports.SetupKeyRunner = class SetupKeyRunner
 
   #------------
 
-  install_key : (cb) ->
-    esc = make_esc cb, "SetupKeyRunner::install_key"
-
+  check_prepackaged_key : (cb) ->
     v = key.version
     await request @config.make_url("/#{v}/key.json"), esc defer res, body
     await a_json_parse body, esc defer json
@@ -35,23 +33,23 @@ exports.SetupKeyRunner = class SetupKeyRunner
       new Error "Fingerprint mismatch; expected #{a} but got #{b}"
     else null
 
-    # Throw an error if any of the above checks failed.
-    await athrow err, esc defer() if err?
+    cb err
 
-    # --- We'll likely factor this stuff out, but for now.....
-    # Load key into a temporary keyring
-    # Verify the credentials
-    # Load into the master keyring
-    # Nuke the temporary
+  #------------
 
-    cb null
+  install_prepackaged_key : (cb) ->
+    ik = new InstallKey @config, key
+    await ik.run esc defer err
+    cb err
 
   #------------
 
   run : (cb) ->
     esc = make_esc cb, "SetupKeyRunner::run"
     await @find_latest_key esc defer()
-    await @install_key esc defer() unless @_key?
+    unless @_key?
+      await @check_prepackaged_key   esc defer()
+      await @install_prepackaged_key esc defer()
     cb err
 
   #------------

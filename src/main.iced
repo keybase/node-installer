@@ -6,6 +6,7 @@
 gpg = require 'gpg-wrapper'
 {constants} = require './constants'
 key = require './key'
+{json_stringify_sorted} = require('iced-utils').util
 
 ##========================================================================
 
@@ -48,9 +49,9 @@ Version: #{version()}
 class KeyJsonCommand extends BaseCommand
 
   run : (cb) ->
-    console.log JSON.stringify key
+    
+    console.log json_stringify_sorted key
     cb null
-
 
 ##========================================================================
 
@@ -76,6 +77,7 @@ class Main
       "v"
       "k"
       "key-json"
+      "no-self-sig"
       "help"
       "version"
       "?"
@@ -90,7 +92,7 @@ class Main
     else if @argv.get().length > 1
       @cmd = new HelpCommand @argv, (new Error "Usage error: only zero or one argument allowed")
     else if @argv.get("k", "key-json")
-      @cmd = new KeyJsonCommand()
+      @cmd = new KeyJsonCommand @agv
     else
       @cmd = new Installer @argv
     cb err

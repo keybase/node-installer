@@ -17,13 +17,14 @@ $(BUILD_STAMP): \
 	lib/constants.js \
 	lib/getopt.js \
 	lib/installer.js \
-	lib/key.js \
+	lib/keyset.js \
+	lib/keyset_setup.js \
+	lib/keyset_install.js \
 	lib/log.js \
 	lib/main.js \
 	lib/npm.js \
 	lib/package.js \
-	lib/request.js \
-	lib/setup_key.js
+	lib/request.js
 	date > $@
 
 clean:
