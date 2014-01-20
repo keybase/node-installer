@@ -1,9 +1,8 @@
 
 {keyring} = require 'gpg-wrapper'
 {constants} = require './constants'
-{log} = require './log'
+log = require './log'
 {make_esc} = require 'iced-error'
-{request} = require './request'
 keyset = require './keyset'
 {fpeq} = require('pgp-utils').util
 {athrow,a_json_parse} = require('iced-utils').util
@@ -23,8 +22,9 @@ exports.KeySetup = class KeySetup
   #------------
 
   check_prepackaged_key : (cb) ->
+    esc = make_esc cb, "KeySetup::check_prepackaged_key"
     v = keyset.version
-    await request @config.make_url("/#{v}/keyset.json"), esc defer res, body
+    await @config.request "/#{v}/keyset.json", esc defer res, body
     await a_json_parse body, esc defer json
 
     err = if (a = json?.version) isnt v
@@ -50,7 +50,7 @@ exports.KeySetup = class KeySetup
     unless @_key?
       await @check_prepackaged_key   esc defer()
       await @install_prepackaged_key esc defer()
-    cb err
+    cb null
 
   #------------
 
@@ -70,7 +70,7 @@ exports.KeySetup = class KeySetup
       if out.length is 0     then err = new Error "Didn't find any key for query #{query}"
       else if out.length > 1 then err = new Error "Found too many keys that matched #{query}"
       else
-        @_key = @master.make_key { key_id_64 : ids64[0], username : em }
+        @_key = @master.make_key { key_id_64 : out[0], username : em }
         await @_key.load defer err
         @_key = null if err
     cb err

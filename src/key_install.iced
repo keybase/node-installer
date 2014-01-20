@@ -31,7 +31,7 @@ exports.KeyInstall = class KeyInstall
   #-----------------
 
   cleanup : (cb) ->
-    if @_tmp_keyring
+    if @_tmp_keyring?
       await @_tmp_keyring.nuke defer err
       if err?
         log.warn "Error cleaning up temporary keyring: #{err.message}"
@@ -40,8 +40,18 @@ exports.KeyInstall = class KeyInstall
   #-----------------
 
   temporary_import : (cb) ->
+    esc = make_esc cb, "KeyInstaller::temporary_import"
     @_keys.code = k = @_tmp_keyring.make_key @_keyset.keys.code
-    await k.save defer err
+
+    await k.save esc defer err
+    await @_tmp_keyring.list_fingerprints esc defer fps
+
+    msg = if fps.length is 0 then "key save failed; no fingerprints"
+    else if fps.length > 1 then "keyring corruption; too many fingerprints found"
+    else if not fpeq((a = fps[0]), (b =@_keyset.keys.code.fingerprint))
+      "fingerprint mismatch after import: #{a} != #{b}"
+
+    err = if msg? then new Error(msg) else null
     cb err
 
   #-----------------

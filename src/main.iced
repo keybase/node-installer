@@ -74,9 +74,11 @@ class Main
   parse_args : (cb) ->
     err = null
     flags = [
+      "d"
       "h"
       "v"
       "k"
+      "debug"
       "key-json"
       "no-self-sig"
       "help"
@@ -115,9 +117,16 @@ class Main
 
   #-----------
 
+  setup_logger : () ->
+    p = log.package()
+    p.env().set_level p.DEBUG if @argv.get("d", "debug")
+
+  #-----------
+
   setup : (cb) ->
     esc = make_esc cb, "setup"
     await @parse_args esc defer()
+    @setup_logger()
     keyring.init { log }
     cb null
 

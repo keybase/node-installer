@@ -12,6 +12,7 @@ request = require './request'
 path = require 'path'
 fs = require 'fs'
 {KeySetup} = require './key_setup'
+log = require './log'
 
 ##========================================================================
 
@@ -38,7 +39,7 @@ exports.Installer = class Installer extends BaseCommand
 
   #------------
 
-  make_tempdir : (cb) ->
+  make_tmpdir : (cb) ->
     r = to_base64x rng(12)
     @tmpdir = path.join(tmpdir(), "keybase_install_#{r}");
     await fs.mkdir @tmpdir, 0o700, defer err
@@ -49,7 +50,7 @@ exports.Installer = class Installer extends BaseCommand
 
   write_files : (cb) ->
     esc = make_esc cb, "Installer::write_files"
-    await @make_tempdir esc defer()
+    await @make_tmpdir esc defer()
     await @package.write @tmpdir, 'binary', esc defer()
     await @signature.write @tmpdir, 'utf8', esc defer()
     cb null
@@ -162,22 +163,25 @@ exports.Installer = class Installer extends BaseCommand
 
   cleanup : (cb) ->
     esc = make_esc cb, "Installer::cleanup"
-    await fs.readdir @tmpdir, esc defer files
-    for f in files
-      p = path.join @tmpdir, f
-      await fs.unlink p, esc defer()
-    await fs.rmdir @tmpdir, esc defer()
+    if @tmpdir?
+      await fs.readdir @tmpdir, esc defer files
+      for f in files
+        p = path.join @tmpdir, f
+        await fs.unlink p, esc defer()
+      await fs.rmdir @tmpdir, esc defer()
     cb null
 
   #------------
 
   run : (cb) ->
+    log.debug "+ Installer::run"
     await @_run2 defer err
-    unless @argv.get("C", "skip-cleanup")
+    if @config.argv.get("C", "skip-cleanup")
       await @cleanup defer e2
       console.warn "In cleanup: #{e2}" if e2?
     if not err? and @package?
       console.log "Succesful install: #{@package.filename()}"
+    log.debug "- Installer::run"
     cb err
 
   #------------
@@ -186,6 +190,12 @@ exports.Installer = class Installer extends BaseCommand
     ks = new KeySetup @config
     await ks.run defer err
     cb err
+
+  #------------
+
+  get_index : (cb) -> cb null
+  upgrade_key : (cb) -> cb null
+  upgrade_software : (cb) -> cb null
 
   #------------
 
