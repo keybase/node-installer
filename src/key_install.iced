@@ -2,6 +2,7 @@
 {make_esc} = require 'iced-error'
 {keyring} = require 'gpg-wrapper'
 {json_stringify_sorted} = require('iced-utils').util
+{fpeq} = require('pgp-utils').util
 
 ##========================================================================
 
@@ -25,7 +26,7 @@ exports.KeyInstall = class KeyInstall
   #-----------------
 
   make_tmp_keyring : (cb) ->
-    await keyring.TmpKeyRing.make defer err, @_tmp_kerying
+    await keyring.TmpKeyRing.make defer err, @_tmp_keyring
     cb err
 
   #-----------------
@@ -48,7 +49,7 @@ exports.KeyInstall = class KeyInstall
 
     msg = if fps.length is 0 then "key save failed; no fingerprints"
     else if fps.length > 1 then "keyring corruption; too many fingerprints found"
-    else if not fpeq((a = fps[0]), (b =@_keyset.keys.code.fingerprint))
+    else if not fpeq((a = fps[0]), (b = @_keyset.keys.code.fingerprint))
       "fingerprint mismatch after import: #{a} != #{b}"
 
     err = if msg? then new Error(msg) else null
@@ -59,8 +60,8 @@ exports.KeyInstall = class KeyInstall
   check_self_sig : (cb) ->
     sig = @_keyset.self_sig
     @_keyset.self_sig = null
-    payload = json_stringify_sorted @_keyset
-    await @_keys.verify_sig { which : "self sig on keyset", payload, sig }, defer err
+    payload = (json_stringify_sorted @_keyset) + "\n"
+    await @_keys.code.verify_sig { which : "self sig on keyset", payload, sig }, defer err
     cb err
 
   #-----------------

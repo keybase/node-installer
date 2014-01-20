@@ -1,5 +1,6 @@
 
 https = require 'https'
+http = require 'http'
 {parse} = require 'url'
 ProgressBar = require 'progress'
 
@@ -31,15 +32,20 @@ class Request
       path : @url.path
       method : 'GET'
       headers : @headers
-      rejectUnauthorized : true
-    opts.agent = new https.Agent opts
+
+    if (@url.protocol is 'https:') 
+      opts.mod = https 
+      opts.agent = new https.Agent opts
+    else
+      opts.mod = http
+
     opts
 
   #--------------------
 
   _launch : () ->
     opts = @_make_opts()
-    req = https.request opts, (res) =>
+    req = opts.mod.request opts, (res) =>
       if @_opts.progress? and (l = res.headers?["content-length"])? and 
          not(isNaN(l = parseInt(l,10))) and l > @_opts.progress
         @_bar = new ProgressBar "Download #{@url.path} [:bar] :percent :etas (#{l} bytes total)", {
@@ -72,6 +78,10 @@ single = (opts, cb) -> (new Request opts).run cb
 
 #=============================================================================
 
+format_url = (u) -> if (typeof u is 'string') then u else url.format(u)
+
+#-----------
+
 module.exports = request = (opts, cb) ->
   lim = opts.maxRedirects or 10
   res = body = null
@@ -79,7 +89,9 @@ module.exports = request = (opts, cb) ->
   for i in [0...lim] 
     await single opts, defer err, res, body
     if err? then break
-    else if not (res.statusCode in [301, 302]) then found = true
+    else if not (res.statusCode in [301, 302]) 
+      found = true
+      break
     else if not (url = res.headers?.location)?
       err = new Error "Can't find a location in header for redirect"
       break
@@ -87,8 +99,9 @@ module.exports = request = (opts, cb) ->
       opts.url = url
 
   err = if err? then err 
-  else if found then null
-  else new Error "Too many redirects"
+  else if not found then new Error "Too many redirects"
+  else if (res.statusCode >= 200 and res.statusCode < 300) then null
+  else new Error "In #{format_url opts.url}: HTTP failure, code #{res.statusCode}"
 
   cb err, res, body
 

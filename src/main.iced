@@ -112,7 +112,7 @@ class Main
 
   main : () ->
     await @run defer err
-    if err? then console.warn err.message
+    if err? then log.error err.message
     process.exit if err? then -2 else 0
 
   #-----------

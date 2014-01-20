@@ -6,6 +6,7 @@ log = require './log'
 keyset = require './keyset'
 {fpeq} = require('pgp-utils').util
 {athrow,a_json_parse} = require('iced-utils').util
+{KeyInstall} = require './key_install'
 
 ##========================================================================
 
@@ -29,7 +30,7 @@ exports.KeySetup = class KeySetup
 
     err = if (a = json?.version) isnt v
       new Error "Version mismatch; expected #{v} but got #{a}"
-    else if not (a = json?.keys.code?.fingerprint)? or not(fpeq(a, keys.code.fingerprint))
+    else if not (a = json?.keys.code?.fingerprint)? or not(fpeq(a, keyset.keys.code.fingerprint))
       new Error "Fingerprint mismatch; expected #{a} but got #{b}"
     else null
 
@@ -39,7 +40,7 @@ exports.KeySetup = class KeySetup
 
   install_prepackaged_key : (cb) ->
     ki = new KeyInstall @config, keyset
-    await ki.run esc defer err
+    await ki.run defer err
     cb err
 
   #------------
