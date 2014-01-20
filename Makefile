@@ -13,14 +13,14 @@ lib/%.js: src/%.iced
 
 $(BUILD_STAMP): \
 	lib/base.js \
-    lib/constants.js \
+	lib/constants.js \
 	lib/getopt.js \
 	lib/installer.js \
-    lib/key.js \
+	lib/key.js \
 	lib/main.js \
-    lib/npm.js \
-    lib/package.js \
-	lib/request.js
+	lib/npm.js \
+	lib/package.js \
+	lib/request.js 
 	date > $@
 
 clean:
