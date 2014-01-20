@@ -10,7 +10,7 @@ key = require './key'
 
 ##========================================================================
 
-exports.SetupKeyRunner = new Class SetupKeyRunner
+exports.SetupKeyRunner = class SetupKeyRunner
 
   constructor : (@config) ->
     @master = keyring.master_ring()

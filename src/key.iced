@@ -1,4 +1,4 @@
-exports = 
+module.exports = 
   version : 1
   index : {}
   code : 

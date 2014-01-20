@@ -5,6 +5,7 @@
 {Installer} = require './installer'
 gpg = require 'gpg-wrapper'
 {constants} = require './constants'
+key = require './key'
 
 ##========================================================================
 
@@ -44,6 +45,15 @@ Version: #{version()}
 
 ##========================================================================
 
+class KeyJsonCommand extends BaseCommand
+
+  run : (cb) ->
+    console.log JSON.stringify key
+    cb null
+
+
+##========================================================================
+
 class Main
 
   @OPTS :
@@ -64,6 +74,8 @@ class Main
     flags = [
       "h"
       "v"
+      "k"
+      "key-json"
       "help"
       "version"
       "?"
@@ -77,6 +89,8 @@ class Main
       @cmd = new HelpCommand()
     else if @argv.get().length > 1
       @cmd = new HelpCommand @argv, (new Error "Usage error: only zero or one argument allowed")
+    else if @argv.get("k", "key-json")
+      @cmd = new KeyJsonCommand()
     else
       @cmd = new Installer @argv
     cb err
