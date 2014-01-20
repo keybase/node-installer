@@ -17,6 +17,7 @@ $(BUILD_STAMP): \
 	lib/getopt.js \
 	lib/installer.js \
 	lib/key.js \
+	lib/log.js \
 	lib/main.js \
 	lib/npm.js \
 	lib/package.js \
