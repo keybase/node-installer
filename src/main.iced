@@ -5,7 +5,7 @@
 {Installer} = require './installer'
 gpg = require 'gpg-wrapper'
 {constants} = require './constants'
-key = require './key'
+keyset = require './keyset'
 {json_stringify_sorted} = require('iced-utils').util
 
 ##========================================================================
@@ -49,8 +49,8 @@ Version: #{version()}
 class KeyJsonCommand extends BaseCommand
 
   run : (cb) ->
-    
-    console.log json_stringify_sorted key
+    keyset.self_sig = null if @config.argv.get("no-self-sig")
+    console.log json_stringify_sorted keyset
     cb null
 
 ##========================================================================
@@ -92,7 +92,7 @@ class Main
     else if @argv.get().length > 1
       @cmd = new HelpCommand @argv, (new Error "Usage error: only zero or one argument allowed")
     else if @argv.get("k", "key-json")
-      @cmd = new KeyJsonCommand @agv
+      @cmd = new KeyJsonCommand @argv
     else
       @cmd = new Installer @argv
     cb err

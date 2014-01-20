@@ -4,7 +4,7 @@
 {log} = require './log'
 {make_esc} = require 'iced-error'
 {request} = require './request'
-key = require './key'
+keyset = require './keyset'
 {fpeq} = require('pgp-utils').util
 {athrow,a_json_parse} = require('iced-utils').util
 
@@ -23,13 +23,13 @@ exports.KeySetup = class KeySetup
   #------------
 
   check_prepackaged_key : (cb) ->
-    v = key.version
-    await request @config.make_url("/#{v}/key.json"), esc defer res, body
+    v = keyset.version
+    await request @config.make_url("/#{v}/keyset.json"), esc defer res, body
     await a_json_parse body, esc defer json
 
     err = if (a = json?.version) isnt v
       new Error "Version mismatch; expected #{v} but got #{a}"
-    else if not (a = json?.code?.id160)? or not(fpeq(a, key.code.id160))
+    else if not (a = json?.keys.code?.fingerprint)? or not(fpeq(a, keys.code.fingerprint))
       new Error "Fingerprint mismatch; expected #{a} but got #{b}"
     else null
 
@@ -38,7 +38,7 @@ exports.KeySetup = class KeySetup
   #------------
 
   install_prepackaged_key : (cb) ->
-    ik = new InstallKey @config, key
+    ik = new InstallKey @config, keyset
     await ik.run esc defer err
     cb err
 

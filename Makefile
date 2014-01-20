@@ -18,8 +18,8 @@ $(BUILD_STAMP): \
 	lib/getopt.js \
 	lib/installer.js \
 	lib/keyset.js \
-	lib/keyset_setup.js \
-	lib/keyset_install.js \
+	lib/key_setup.js \
+	lib/key_install.js \
 	lib/log.js \
 	lib/main.js \
 	lib/npm.js \
