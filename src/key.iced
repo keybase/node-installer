@@ -1,10 +1,12 @@
-
-exports.id32 = "656D16C7"
-exports.id64 = "47484E50656D16C7"
-exports.id160 = "222B 85B0 F90B E2D2 4CFE  B93F 4748 4E50 656D 16C7"
-exports.signer_id_email = "code@keybase.io"
-
-exports.key = """
+exports = 
+  version : 1
+  index : {}
+  code : 
+    id32 : "656D16C7"
+    id64 : "47484E50656D16C7"
+    id160 : "222B 85B0 F90B E2D2 4CFE  B93F 4748 4E50 656D 16C7"
+    signer_id_email : "code@keybase.io"
+    key : """
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
 Comment: GPGTools - http://gpgtools.org

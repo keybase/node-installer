@@ -18,7 +18,8 @@
     "iced-data-structures" : "~0.0.5",
     "iced-error"         : "~0.0.6",
     "iced-logger"        : "~0.0.1",    
-    "iced-utils"         : ">=0.1.3",
+    "iced-utils"         : ">=0.1.5",
+    "pgp-utils"          : ">=0.0.7",
     "progress"           : "~1.1.3"
   },
   "bundleDependencies" : [
@@ -28,6 +29,7 @@
     "iced-error",
     "iced-logger",
     "iced-utils",
+    "pgp-utils",
     "progress"
   ],
   "author": "Maxwell Krohn <themax@gmail.com>",

@@ -18,7 +18,8 @@ class VersionCommand extends BaseCommand
 
 class HelpCommand extends BaseCommand
 
-  constructor : (@argv, @err = null) ->
+  constructor : (argv, @err = null) ->
+    super argv 
 
   run : (cb) ->
     console.log """usage: #{bin()} [-vh?] [-C] [-u <url-prefix>] [<keybase-version>]

@@ -13,16 +13,7 @@ path = require 'path'
 fs = require 'fs'
 {SetupKeyRunner} = require './setup_key'
 
-##========================================================================
 
-url_join = (args...) ->
-  parts = [ args[0] ]
-  for arg in args[1...]
-    if parts[-1...][0][-1...][0] isnt '/' then parts.push '/'
-    parts.push arg
-  parts.join ''
-
-##========================================================================
 
 to_base64x = (x) -> x.toString('base64').replace(/\+/g, '_').replace(/\//g, '-').replace(/\=/g, '')
 
@@ -43,7 +34,6 @@ class FileBundle
 exports.Installer = class Installer extends BaseCommand
 
   constructor : (argv) ->
-    @headers = { "X-Keybase-Installer" : fullname() }
     super argv
 
   #------------
@@ -77,7 +67,6 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   request : (url, cb) ->
-    opts = { url, @headers, encoding : null }
     await request opts, defer err, res, body
     cb err, res, body
 
@@ -194,7 +183,7 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   setup_key : (cb) ->
-    sk = new SetupKeyRunner()
+    sk = new SetupKeyRunner @config
     await sk.run defer err
     cb err
 

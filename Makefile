@@ -13,6 +13,7 @@ lib/%.js: src/%.iced
 
 $(BUILD_STAMP): \
 	lib/base.js \
+	lib/config.js \
 	lib/constants.js \
 	lib/getopt.js \
 	lib/installer.js \

@@ -2,6 +2,7 @@
 https = require 'https'
 {parse} = require 'url'
 ProgressBar = require 'progress'
+{fullname} = require './package'
 
 #========================================================================
 
@@ -115,10 +116,9 @@ single = (opts, cb) -> (new Request opts).run cb
 
 #=============================================================================
 
-module.exports = request = (opts, cb) ->
-  opts.progress = 50000
-  urls = {}
-  lim = opts.maxRedirects or 10
+module.exports = request = (url, cb) ->
+  headers = { "X-Keybase-Installer" : fullname() }
+  opts = { url, headers, encoding : null, progress : 50000, maxRedirects : 10 }
   err = new Error "Too many redirects"
   res = body = null
   for i in [0...lim] 
