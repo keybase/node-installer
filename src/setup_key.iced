@@ -38,6 +38,12 @@ exports.SetupKeyRunner = class SetupKeyRunner
     # Throw an error if any of the above checks failed.
     await athrow err, esc defer() if err?
 
+    # --- We'll likely factor this stuff out, but for now.....
+    # Load key into a temporary keyring
+    # Verify the credentials
+    # Load into the master keyring
+    # Nuke the temporary
+
     cb null
 
   #------------
