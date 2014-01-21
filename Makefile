@@ -15,6 +15,7 @@ $(BUILD_STAMP): \
 	lib/base.js \
 	lib/config.js \
 	lib/constants.js \
+	lib/get_index.js \
 	lib/getopt.js \
 	lib/installer.js \
 	lib/keyset.js \

@@ -1,6 +1,6 @@
 
 {BaseCommand} = require './base'
-{BufferOutStream,GPG} = require 'gpg-wrapper'
+{keyring,BufferOutStream,GPG} = require 'gpg-wrapper'
 {make_esc} = require 'iced-error'
 {signer_id_email,key,id64} = require './key'
 request = require './request'
@@ -12,11 +12,9 @@ request = require './request'
 path = require 'path'
 fs = require 'fs'
 {KeySetup} = require './key_setup'
+{GetIndex} = require './get_index'
 log = require './log'
-
-##========================================================================
-
-to_base64x = (x) -> x.toString('base64').replace(/\+/g, '_').replace(/\//g, '-').replace(/\=/g, '')
+{base64u} = require('iced-utils').util
 
 ##========================================================================
 
@@ -40,10 +38,12 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   make_tmpdir : (cb) ->
-    r = to_base64x rng(12)
-    @tmpdir = path.join(tmpdir(), "keybase_install_#{r}");
-    await fs.mkdir @tmpdir, 0o700, defer err
-    console.log "Made temporary directory: #{@tmpdir}"
+    err = null
+    unless @tmpdir?
+      r = base64u.encode(rng(16))
+      @tmpdir = path.join(tmpdir(), "keybase_install_#{r}");
+      await fs.mkdir @tmpdir, 0o700, defer err
+      log.info "Made temporary directory: #{@tmpdir}"
     cb err
 
   #------------
@@ -164,6 +164,7 @@ exports.Installer = class Installer extends BaseCommand
   cleanup : (cb) ->
     esc = make_esc cb, "Installer::cleanup"
     if @tmpdir?
+      log.info "cleaning up tmpdir #{@tmpdir}"
       await fs.readdir @tmpdir, esc defer files
       for f in files
         p = path.join @tmpdir, f
@@ -176,7 +177,7 @@ exports.Installer = class Installer extends BaseCommand
   run : (cb) ->
     log.debug "+ Installer::run"
     await @_run2 defer err
-    if @config.argv.get("C", "skip-cleanup")
+    unless @config.argv.get("C", "skip-cleanup")
       await @cleanup defer e2
       console.warn "In cleanup: #{e2}" if e2?
     if not err? and @package?
@@ -193,14 +194,31 @@ exports.Installer = class Installer extends BaseCommand
 
   #------------
 
-  get_index : (cb) -> cb null
+  get_index : (cb) -> 
+    gi = new GetIndex @config
+    await gi.run defer err
+    cb err
+
+  #------------
+
   upgrade_key : (cb) -> cb null
   upgrade_software : (cb) -> cb null
 
   #------------
 
+  setup_keyring : (cb) ->
+    keyring.init {
+      log : log,
+      get_tmp_keyring_dir : () => @tmpdir
+    }
+    cb null
+
+  #------------
+
   _run2 : (cb) ->
     esc = make_esc cb, "Installer::_run2"
+    await @make_tmpdir      esc defer()
+    await @setup_keyring    esc defer()
     await @setup_key        esc defer()
     await @get_index        esc defer()
     await @upgrade_key      esc defer()
