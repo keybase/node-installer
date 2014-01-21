@@ -14,6 +14,9 @@ exports.KeyUpgrade = class KeyUpgrade
   
   #-----------------
 
-  run : (cb) -> cb null
+  run : (cb) ->
+    if (a = @config.index().version) > (b = @config.key_version())
+      log.info "Key upgrade suggested; new version is #{a}, but we have #{b}"
+    cb null
 
 ##========================================================================

@@ -80,6 +80,22 @@ exports.KeyInstall = class KeyInstall
 
   #-----------------
 
+  revoke_1 : (k, v, cb) ->
+    log.debug "| Revoking key #{k}"
+    await keyring.master_ring().gpg { "--import" , stdin : v, quiet : true }, defer err
+    cb err
+
+  #-----------------
+
+  revoke_all : (cb) ->
+    esc = make_esc cb, "KeyInstall::revoke_all"
+    if keyset.revocation?
+      for k,v of keyset.revocation
+        await @revoke_1 k, v, esc defer()
+    cb null
+
+  #-----------------
+
   run : (cb) ->
     esc = make_esc cb, "KeyInstall:run2"
     cb = chain cb, @cleanup.bind(@)
@@ -87,6 +103,7 @@ exports.KeyInstall = class KeyInstall
     await @temporary_import esc defer()
     await @check_self_sig esc defer()
     await @full_import esc defer()
+    await @revoke_all esc defer()
     cb null
 
 ##========================================================================
