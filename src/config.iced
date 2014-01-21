@@ -8,6 +8,8 @@ fs = require 'fs'
 {base64u} = require('iced-utils').util
 {rng} = require 'crypto'
 path = require 'path'
+{keyring} = require 'gpg-wrapper'
+{key_query} = require './util'
 
 ##==============================================================
 
@@ -60,6 +62,13 @@ exports.Config = class Config
         await fs.unlink p, esc defer()
       await fs.rmdir @tmpdir, esc defer()
     cb null
+
+  #--------------------
+
+  make_oneshot_ring : (which, cb) ->
+    query = key_query @_key_version, which
+    await keyring.master_ring().make_oneshot_ring { query, single : true }, defer err, ring
+    cb err, ring
 
   #--------------------
 
