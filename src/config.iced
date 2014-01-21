@@ -98,5 +98,10 @@ exports.Config = class Config
 
   key_version : () -> @_key_version
 
+  #--------------------
+
+  set_index : (i) -> @_index = i
+  index : () -> @_index
+
 #==========================================================
 

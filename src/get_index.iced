@@ -24,12 +24,18 @@ exports.GetIndex = class GetIndex
     await @_ring.verify_sig { sig : @_signed_index }, esc defer raw
     await a_json_parse raw, esc defer @_index
     now = unix_time()
+
     err = if not (t = @_index.timestamp)? then new Error "Bad index; no timestamp"
     else if (a = now - t) > (b = constants.index_timeout) then new Error "Index timed out: #{a} > #{b}"
     else if not @_index.keys?.latest? then new Error "missing required field: keys.latest"
     else if not @_index.package?.latest? then new Error "missing required field: package.latest"
     else null
+
     cb err
+
+  #--------------------------
+
+  index : () -> @_index
 
   #--------------------------
 
@@ -46,6 +52,7 @@ exports.GetIndex = class GetIndex
     esc = make_esc cb, "GetIndex::run"
     await @fetch_index esc defer()
     await @decrypt_and_verify esc defer()
+    @config.set_index @_index
     cb null
   
 ##========================================================================

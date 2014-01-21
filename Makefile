@@ -21,6 +21,7 @@ $(BUILD_STAMP): \
 	lib/keyset.js \
 	lib/key_setup.js \
 	lib/key_install.js \
+	lib/key_upgrade.js \
 	lib/log.js \
 	lib/main.js \
 	lib/npm.js \

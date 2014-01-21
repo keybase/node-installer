@@ -51,6 +51,7 @@ exports.KeySetup = class KeySetup
     unless @_key?
       await @check_prepackaged_key   esc defer()
       await @install_prepackaged_key esc defer()
+      @config.set_key_version keyset.version
     cb null
 
   #------------

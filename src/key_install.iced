@@ -1,5 +1,6 @@
 
 {make_esc} = require 'iced-error'
+{chain} = require('iced-utils').util
 {keyring} = require 'gpg-wrapper'
 {fpeq} = require('pgp-utils').util
 {hash_json} = require './util'
@@ -14,14 +15,6 @@ exports.KeyInstall = class KeyInstall
     @_keyset = keyset
     @_tmp_keyring = null
     @_keys = {}
-
-  #-----------------
-
-  run : (cb) ->
-    esc = make_esc cb, "KeyInstall::run"
-    await @run2 defer err
-    await @cleanup defer()
-    cb err
 
   #-----------------
 
@@ -87,8 +80,9 @@ exports.KeyInstall = class KeyInstall
 
   #-----------------
 
-  run2 : (cb) ->
+  run : (cb) ->
     esc = make_esc cb, "KeyInstall:run2"
+    cb = chain cb, @cleanup.bind(@)
     await @make_tmp_keyring esc defer()
     await @temporary_import esc defer()
     await @check_self_sig esc defer()

@@ -10,6 +10,7 @@ request = require './request'
 path = require 'path'
 fs = require 'fs'
 {KeySetup} = require './key_setup'
+{KeyUpgrade} = require './key_upgrade'
 {GetIndex} = require './get_index'
 log = require './log'
 {chain} = require('iced-utils').util
@@ -172,21 +173,12 @@ exports.Installer = class Installer extends BaseCommand
 
   #------------
 
-  setup_key : (cb) ->
-    ks = new KeySetup @config
-    await ks.run defer err
-    cb err
+  setup_key : (cb) -> (new KeySetup @config).run cb
+  get_index : (cb) -> (new GetIndex @config).run cb
+  upgrade_key : (cb) -> (new KeyUpgrade @config).run cb
 
   #------------
 
-  get_index : (cb) -> 
-    gi = new GetIndex @config
-    await gi.run defer err
-    cb err
-
-  #------------
-
-  upgrade_key : (cb) -> cb null
   upgrade_software : (cb) -> cb null
 
   #------------
