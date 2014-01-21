@@ -2,6 +2,12 @@
 {fullname} = require './package'
 request = require './request'
 log = require './log'
+{tmpdir} = require 'os'
+fs = require 'fs'
+{make_esc} = require 'iced-error'
+{base64u} = require('iced-utils').util
+{rng} = require 'crypto'
+path = require 'path'
 
 ##==============================================================
 
@@ -18,6 +24,7 @@ exports.Config = class Config
   #--------------------
 
   constructor : (@argv) ->
+    @tmpdir = null
 
   #--------------------
 
@@ -26,6 +33,33 @@ exports.Config = class Config
   #--------------------
 
   make_url : (u) -> url_join @url_prefix(), u
+
+  #--------------------
+
+  make_tmpdir : (cb) ->
+    err = null
+    unless @tmpdir?
+      r = base64u.encode(rng(16))
+      @tmpdir = path.join(tmpdir(), "keybase_install_#{r}");
+      await fs.mkdir @tmpdir, 0o700, defer err
+      log.info "Made temporary directory: #{@tmpdir}"
+    cb err
+
+  #------------
+
+  cleanup : (cb) ->
+    esc = make_esc cb, "Installer::cleanup"
+    if not @tmpdir? then # noop
+    else if @argv.get("C","skip-cleanup")
+      log.info "Preserving tmpdir #{@tmpdir} as per command-line switch"
+    else 
+      log.info "cleaning up tmpdir #{@tmpdir}"
+      await fs.readdir @tmpdir, esc defer files
+      for f in files
+        p = path.join @tmpdir, f
+        await fs.unlink p, esc defer()
+      await fs.rmdir @tmpdir, esc defer()
+    cb null
 
   #--------------------
 
