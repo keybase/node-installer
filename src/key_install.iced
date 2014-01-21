@@ -1,8 +1,8 @@
 
 {make_esc} = require 'iced-error'
 {keyring} = require 'gpg-wrapper'
-{json_stringify_sorted} = require('iced-utils').util
 {fpeq} = require('pgp-utils').util
+{hash_json} = require './util'
 
 ##========================================================================
 
@@ -65,7 +65,7 @@ exports.KeyInstall = class KeyInstall
   check_self_sig : (cb) ->
     sig = @_keyset.self_sig
     @_keyset.self_sig = null
-    payload = (json_stringify_sorted @_keyset) + "\n"
+    payload = hash_json @_keyset
     await @_keys.code.verify_sig { which : "self sig on keyset", payload, sig }, defer err
     cb err
 

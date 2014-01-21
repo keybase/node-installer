@@ -5,8 +5,8 @@
 {Installer} = require './installer'
 {keyring} = require 'gpg-wrapper'
 {constants} = require './constants'
+{hash_json} = require './util'
 keyset = require './keyset'
-{json_stringify_sorted} = require('iced-utils').util
 log = require './log'
 os = require 'os'
 path = require 'path'
@@ -37,6 +37,7 @@ Boolean Flags:
 \t-v/--version       -- Print the version and quit
 \t-h/--help          -- Print the help message and quit
 \t-C/--skip-cleanup  -- Don't delete temporary files after install
+\t-k/--key-json      -- Output the hash of the JSON file corresponding to the built-in keyset
 
 Options:
 \t-u/--url-prefix    -- Specify a URL prefix for fetching (default: #{constants.url_prefix})
@@ -52,8 +53,8 @@ Version: #{version()}
 class KeyJsonCommand extends BaseCommand
 
   run : (cb) ->
-    keyset.self_sig = null if @config.argv.get("no-self-sig")
-    console.log json_stringify_sorted keyset
+    keyset.self_sig = null
+    process.stdout.write hash_json keyset
     cb null
 
 ##========================================================================
@@ -82,7 +83,7 @@ class Main
       "k"
       "debug"
       "key-json"
-      "no-self-sig"
+      "hash"
       "help"
       "version"
       "?"
@@ -94,10 +95,10 @@ class Main
       @cmd = new VersionCommand()
     else if @argv.get("h", "?", "help")
       @cmd = new HelpCommand()
-    else if @argv.get().length > 1
-      @cmd = new HelpCommand @argv, (new Error "Usage error: only zero or one argument allowed")
     else if @argv.get("k", "key-json")
       @cmd = new KeyJsonCommand @argv
+    else if @argv.get().length > 1
+      @cmd = new HelpCommand @argv, (new Error "Usage error: only zero or one argument allowed")
     else
       @cmd = new Installer @argv
     cb err
