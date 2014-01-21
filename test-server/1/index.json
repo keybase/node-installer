@@ -4,12 +4,12 @@
     "latest" : 1,
     "all" : {
       "1" :  "222B85B0F90BE2D24CFEB93F47484E50656D16C7"
-    },
-    "package" : {
-      "latest" : "0.0.0",
-      "all" : {
-        "0.0.0" : "5915cfb324d98ec968f2e3a6ad9e21668787cc1d9c7ed720ccd2fe784f641983d6c540601c96a4b6f2efdd59a0e1d77add6513dcbf51c8bc424c5ca090711cb1"
-      }
+    }
+  },
+  "package" : {
+    "latest" : "0.0.0",
+    "all" : {
+      "0.0.0" : "5915cfb324d98ec968f2e3a6ad9e21668787cc1d9c7ed720ccd2fe784f641983d6c540601c96a4b6f2efdd59a0e1d77add6513dcbf51c8bc424c5ca090711cb1"
     }
   }
 }

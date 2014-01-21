@@ -26,6 +26,8 @@ exports.GetIndex = class GetIndex
     now = unix_time()
     err = if not (t = @_index.timestamp)? then new Error "Bad index; no timestamp"
     else if (a = now - t) > (b = constants.index_timeout) then new Error "Index timed out: #{a} > #{b}"
+    else if not @_index.keys?.latest? then new Error "missing required field: keys.latest"
+    else if not @_index.package?.latest? then new Error "missing required field: package.latest"
     else null
     cb err
 
