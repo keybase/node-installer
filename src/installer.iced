@@ -145,17 +145,15 @@ exports.Installer = class Installer extends BaseCommand
     await @install_package esc defer()
     cb null
   
-
-
   #------------
 
   run : (cb) ->
     log.debug "+ Installer::run"
     await @_run2 defer err
     await @config.cleanup defer e2
-    console.warn "In cleanup: #{e2}" if e2?
+    log.error "In cleanup: #{e2}" if e2?
     if not err? and @package?
-      console.log "Succesful install: #{@package.filename()}"
+      log.info "Succesful install: #{@package.filename()}"
     log.debug "- Installer::run"
     cb err
 

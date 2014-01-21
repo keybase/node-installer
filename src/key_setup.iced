@@ -66,6 +66,7 @@ exports.KeySetup = class KeySetup
       log.warn "No code-signing key (#{em}) in primary GPG keychain"
     else
       max = Math.max versions...
+      @config.set_key_version max
       query = "(v#{max}) <#{em}>"
       await @master.find_keys { query }, esc defer out
       if out.length is 0     then err = new Error "Didn't find any key for query #{query}"

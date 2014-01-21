@@ -75,5 +75,15 @@ exports.Config = class Config
     log.debug "- Fetched -> #{res?.statusCode}"
     cb err, res, body
 
+  #--------------------
+
+  set_key_version : (v) ->
+    @_key_version = v
+    log.info "Using key version v#{v}"
+
+  #--------------------
+
+  key_version : () -> @_key_version
+
 #==========================================================
 
