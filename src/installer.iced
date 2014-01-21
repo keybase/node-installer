@@ -181,7 +181,7 @@ exports.Installer = class Installer extends BaseCommand
   setup_keyring : (cb) ->
     keyring.init {
       log : log,
-      get_tmp_keyring_dir : () => @tmpdir
+      get_tmp_keyring_dir : () => @config.get_tmpdir()
     }
     cb null
 
