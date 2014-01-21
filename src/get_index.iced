@@ -1,8 +1,8 @@
 
 {make_esc} = require 'iced-error'
-{a_json_parse} = require('iced-utils').util
+{chain,unix_time,a_json_parse} = require('iced-utils').util
+{constants} = require './constants'
 
-chain = (cb2, cb1) -> (args...) -> cb1 () -> cb2 args...
 
 ##========================================================================
 
@@ -23,8 +23,11 @@ exports.GetIndex = class GetIndex
     await @config.make_oneshot_ring 'index', esc defer @_ring
     await @_ring.verify_sig { sig : @_signed_index }, esc defer raw
     await a_json_parse raw, esc defer @_index
-    console.log @_index
-    cb null
+    now = unix_time()
+    err = if not (t = @_index.timestamp)? then new Error "Bad index; no timestamp"
+    else if (a = now - t) > (b = constants.index_timeout) then new Error "Index timed out: #{a} > #{b}"
+    else null
+    cb err
 
   #--------------------------
 
@@ -37,7 +40,7 @@ exports.GetIndex = class GetIndex
   #--------------------------
 
   run : (cb) -> 
-    cb = chain cb, (cb2) => @cleanup cb2
+    cb = chain cb, @cleanup.bind(@)
     esc = make_esc cb, "GetIndex::run"
     await @fetch_index esc defer()
     await @decrypt_and_verify esc defer()

@@ -12,6 +12,7 @@ fs = require 'fs'
 {KeySetup} = require './key_setup'
 {GetIndex} = require './get_index'
 log = require './log'
+{chain} = require('iced-utils').util
 
 ##========================================================================
 
@@ -147,15 +148,27 @@ exports.Installer = class Installer extends BaseCommand
   
   #------------
 
-  run : (cb) ->
-    log.debug "+ Installer::run"
-    await @_run2 defer err
+  cleanup : (cb) ->
     await @config.cleanup defer e2
     log.error "In cleanup: #{e2}" if e2?
     if not err? and @package?
       log.info "Succesful install: #{@package.filename()}"
+    cb()
+
+  #------------
+
+  run : (cb) ->
+    log.debug "+ Installer::run"
+    cb = chain cb, @cleanup.bind(@)
+    esc = make_esc cb, "Installer::_run2"
+    await @config.make_tmpdir esc defer()
+    await @setup_keyring      esc defer()
+    await @setup_key          esc defer()
+    await @get_index          esc defer()
+    await @upgrade_key        esc defer()
+    await @upgrade_software   esc defer()
     log.debug "- Installer::run"
-    cb err
+    cb null
 
   #------------
 
@@ -183,18 +196,6 @@ exports.Installer = class Installer extends BaseCommand
       log : log,
       get_tmp_keyring_dir : () => @config.get_tmpdir()
     }
-    cb null
-
-  #------------
-
-  _run2 : (cb) ->
-    esc = make_esc cb, "Installer::_run2"
-    await @config.make_tmpdir esc defer()
-    await @setup_keyring      esc defer()
-    await @setup_key          esc defer()
-    await @get_index          esc defer()
-    await @upgrade_key        esc defer()
-    await @upgrade_software   esc defer()
     cb null
 
   #------------
