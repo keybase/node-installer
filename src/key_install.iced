@@ -42,7 +42,12 @@ exports.KeyInstall = class KeyInstall
 
   temporary_import : (cb) ->
     esc = make_esc cb, "KeyInstaller::temporary_import"
-    @_keys.code = k = @_tmp_keyring.make_key @_keyset.keys.code
+    source = @_keyset.keys.code
+    @_keys.code = k = @_tmp_keyring.make_key {
+      key_data : source.key_data,
+      fingerprint  : source.fingerprint,
+      username : "code@keybase.io"
+    }
 
     await k.save esc defer err
     await @_tmp_keyring.list_fingerprints esc defer fps
@@ -69,9 +74,15 @@ exports.KeyInstall = class KeyInstall
   full_import : (cb) ->
     esc = make_esc cb, "KeyInstall::full_import"
     master = keyring.master_ring()
-    @_keys.index = k = keyring.master_ring().make_key @_keyset.keys.index
-    await k.commit null, esc defer()
-    await master.commit null, esc defer()
+    source = @_keyset.keys.index
+    @_keys.index = k = keyring.master_ring().make_key {
+      key_data : source.key_data,
+      fingerprint : source.fingerprint,
+      username : "index@keybase.io"
+    }
+    await k.sign_key null, esc defer()
+    await k.save esc defer()
+    await @_keys.code.commit null, esc defer()
     cb null
 
   #-----------------

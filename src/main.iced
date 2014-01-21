@@ -8,6 +8,8 @@
 keyset = require './keyset'
 {json_stringify_sorted} = require('iced-utils').util
 log = require './log'
+os = require 'os'
+path = require 'path'
 
 ##========================================================================
 
@@ -127,7 +129,10 @@ class Main
     esc = make_esc cb, "setup"
     await @parse_args esc defer()
     @setup_logger()
-    keyring.init { log }
+    keyring.init { 
+      log : log,
+      get_tmp_keyring_dir : () -> path.join(os.tmpdir(), "keybase-installer")
+    }
     cb null
 
 ##========================================================================
