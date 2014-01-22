@@ -1,4 +1,4 @@
-{getopt} = require './getopt'
+{getopt} = require 'iced-utils'
 {fullname,bin,version} = require './package'
 {make_esc} = require 'iced-error'
 {BaseCommand} = require './base'
@@ -60,12 +60,6 @@ class KeyJsonCommand extends BaseCommand
 ##========================================================================
 
 class Main
-
-  @OPTS :
-    a :
-      alias : 'about'
-      action : "storeTrue"
-      help : 'display version and command name, then quit'
 
   #-----------
 

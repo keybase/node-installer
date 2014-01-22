@@ -7,6 +7,7 @@ keyset = require './keyset'
 {fpeq} = require('pgp-utils').util
 {athrow,a_json_parse} = require('iced-utils').util
 {KeyInstall} = require './key_install'
+{key_query} = require './util'
 
 ##========================================================================
 
@@ -68,7 +69,7 @@ exports.KeySetup = class KeySetup
     else
       max = Math.max versions...
       @config.set_key_version max
-      query = "(v#{max}) <#{em}>"
+      query = key_query max, 'code' 
       await @master.find_keys { query }, esc defer out
       if out.length is 0     then err = new Error "Didn't find any key for query #{query}"
       else if out.length > 1 then err = new Error "Found too many keys that matched #{query}"

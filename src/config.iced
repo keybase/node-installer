@@ -78,7 +78,7 @@ exports.Config = class Config
       progress : 50000
     log.info "Fetching URL #{url}"
     await request opts, defer err, res, body
-    log.info " - Fetched -> #{res?.statusCode}"
+    log.debug " * fetched -> #{res?.statusCode}"
     cb err, res, body
 
   #--------------------
