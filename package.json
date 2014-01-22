@@ -8,6 +8,7 @@
   "bin" : {
     "keybase-installer" : "./bin/main.js"
   },
+  "main" : "./lib/top.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/keybase/node-installer"

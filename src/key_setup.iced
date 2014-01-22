@@ -14,7 +14,6 @@ keyset = require './keyset'
 exports.KeySetup = class KeySetup
 
   constructor : (@config) ->
-    @master = keyring.master_ring()
     @_key = null
 
   #------------
@@ -61,7 +60,8 @@ exports.KeySetup = class KeySetup
     esc = make_esc cb, "SetupKeyRunner::find_latest_key"
     em = constants.uid_email.code
     err = null
-    await @master.read_uids_from_key {}, esc defer uids
+    master = @config.master_ring()
+    await master.read_uids_from_key {}, esc defer uids
     comments = (uid.comment for uid in uids when (uid.email is em))
     versions = (parseInt(m[1]) for c in comments when (m = c.match /^v(\d+)$/))
     if versions.length is 0
@@ -70,11 +70,11 @@ exports.KeySetup = class KeySetup
       max = Math.max versions...
       @config.set_key_version max
       query = key_query max, 'code' 
-      await @master.find_keys { query }, esc defer out
+      await master.find_keys { query }, esc defer out
       if out.length is 0     then err = new Error "Didn't find any key for query #{query}"
       else if out.length > 1 then err = new Error "Found too many keys that matched #{query}"
       else
-        @_key = @master.make_key { key_id_64 : out[0], username : em }
+        @_key = master.make_key { key_id_64 : out[0], username : em }
         await @_key.load defer err
         @_key = null if err
     cb err

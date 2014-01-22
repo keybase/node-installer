@@ -27,7 +27,8 @@ $(BUILD_STAMP): \
 	lib/npm.js \
 	lib/package.js \
 	lib/request.js \
-        lib/software_upgrade.js \
+	lib/software_upgrade.js \
+	lib/top.js \
 	lib/util.js
 	date > $@
 
