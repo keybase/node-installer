@@ -69,13 +69,6 @@ exports.Config = class Config
 
   #--------------------
 
-  make_oneshot_ring : (which, cb) ->
-    query = key_query @_key_version, which
-    await keyring.master_ring().make_oneshot_ring { query, single : true }, defer err, ring
-    cb err, ring
-
-  #--------------------
-
   request : (u, cb) ->
     url = @make_url u
     opts = 
@@ -106,19 +99,9 @@ exports.Config = class Config
   #--------------------
 
   oneshot_verify : ({which, sig}, cb) ->
-    ring = null
-    clean_ring = (cb) ->
-      if ring?
-        log.debug "| Cleaning up one-shot ring"
-        await ring.nuke defer err
-        log.warn "Error cleaning up 1-shot ring: #{err.message}" if err?
-      cb() 
-    cb = chain cb, clean_ring
-    esc = make_esc cb, "Config::oneshot_verify"
-    await @make_oneshot_ring which, esc defer ring 
-    await ring.verify_sig { sig }, esc defer raw
-    await a_json_parse raw, esc defer json
-    cb null, json
+    query = key_query @_key_version, which
+    await keyring.master_ring().oneshot_verify {query, sig, single: true}, defer err, json
+    cb err, json
 
 #==========================================================
 
