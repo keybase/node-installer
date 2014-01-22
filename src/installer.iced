@@ -6,26 +6,12 @@
 request = require './request'
 {fullname} = require './package'
 {constants} = require './constants'
-path = require 'path'
-fs = require 'fs'
 {KeySetup} = require './key_setup'
 {KeyUpgrade} = require './key_upgrade'
 {GetIndex} = require './get_index'
 {SoftwareUpgrade} = require './software_upgrade'
 log = require './log'
 {chain} = require('iced-utils').util
-
-##========================================================================
-
-class FileBundle 
-  constructor : (@uri, @body) ->
-  filename : () -> path.basename(@uri.path)
-  fullpath : () -> @_fullpath
-
-  write : (dir, encoding, cb) ->
-    p = @_fullpath = path.join(dir, @filename())
-    await fs.writeFile p, @body, { mode : 0o400, encoding }, defer err
-    cb err
 
 ##========================================================================
 

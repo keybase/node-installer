@@ -1,6 +1,9 @@
 
 {make_esc} = require 'iced-error'
 {npm} = require './npm'
+path = require 'path'
+fs = require 'fs'
+log = require './log'
 
 ##========================================================================
 
@@ -30,14 +33,14 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
   #-------------------------
 
   fetch : (file,cb) ->
-    await @config.request file, defer err, res, body
+    await @config.request file, defer err, req, body
     ret = new FileBundle req.request.uri, body unless err?
     cb err, ret
 
   #-------------------------
 
   fetch_package : (cb) ->
-    file = @config.argv.get()?[0] or "latest-stable"
+    file = [ "dist", (@config.argv.get()?[0] or "latest-stable")].join('/')
     await @fetch file, defer err, @package
     cb err
 
@@ -70,7 +73,7 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
   #-------------------------
 
   install_package : (cb) ->
-    p = @package.filename()
+    p = @package.fullpath()
     log.info "Running npm install #{p}: this may take a minute, please be patient"
     args = [ "install" ,  "-g", p ]
     await npm { args }, defer err

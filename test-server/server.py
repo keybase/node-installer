@@ -20,12 +20,14 @@ def strip_leading_slashes(x):
 
 #---------------------------------
 
-def make_safe (u):
-    parts = u.split('/')
+def make_safe (parts):
     v = []
     for part in parts:
-        if part != '..':
-            v.push(part)
+        if part == '..':
+            if len(v): 
+                v.pop()
+        elif part != '.' and len(part):
+            v.append(part)
     return "/".join(v)
 
 #---------------------------------
@@ -35,7 +37,8 @@ class MyHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def do_GET(self):
         raw = strip_leading_slashes(self.path)
         if os.path.islink(raw):
-            res = make_safe(os.readlink(raw))
+            parts = os.path.dirname(raw).split('/') + os.readlink(raw).split('/')
+            res = make_safe(parts)
             self.send_response(301)
             self.send_header('Location',"http://localhost:%d/%s" % (PORT, res))
             self.end_headers()
