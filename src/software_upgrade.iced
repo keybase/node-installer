@@ -1,5 +1,6 @@
 
 {make_esc} = require 'iced-error'
+{npm} = require './npm'
 
 ##========================================================================
 
@@ -36,7 +37,7 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
   #-------------------------
 
   fetch_package : (cb) ->
-    file = @argv.get()?[0] or "latest-stable"
+    file = @config.argv.get()?[0] or "latest-stable"
     await @fetch file, defer err, @package
     cb err
 
@@ -44,7 +45,35 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
 
   fetch_signature : (cb) ->
     file = "/#{@config.key_version()}/#{@package.filename()}.asc"
-    await @fetch file, defer err, @fetch_signature
+    await @fetch file, defer err, @signature
+    cb err
+
+  #-------------------------
+
+  write_files : (cb) ->
+    esc = make_esc cb, "SoftwareUpgrade::write_files"
+    tmpdir = @config.get_tmpdir()
+    await @package.write tmpdir, 'binary', esc defer()
+    await @signature.write tmpdir, 'utf8', esc defer()
+    cb null
+
+  #-------------------------
+
+  verify_signature : (cb) ->
+    args = 
+      which : 'code'
+      sig : @signature.fullpath()
+      file : @package.fullpath()
+    await @config.oneshot_verify args, defer err
+    cb err
+
+  #-------------------------
+
+  install_package : (cb) ->
+    p = @package.filename()
+    log.info "Running npm install #{p}: this may take a minute, please be patient"
+    args = [ "install" ,  "-g", p ]
+    await npm { args }, defer err
     cb err
 
   #-------------------------
@@ -53,6 +82,7 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
     esc = make_esc cb, "SoftwareUpgrade::run"
     await @fetch_package esc defer()
     await @fetch_signature esc defer()
+    await @write_files esc defer()
     await @verify_signature esc defer()
     await @install_package esc defer()
     cb null

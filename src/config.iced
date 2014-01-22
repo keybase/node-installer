@@ -70,7 +70,7 @@ exports.Config = class Config
   #--------------------
 
   request : (u, cb) ->
-    url = if u.match("^https?://") then @make_url(u) else u
+    url = if u.match("^https?://") then u else @make_url(u)
     opts = 
       url : url
       headers : { "X-Keybase-Installer" : fullname() },
@@ -98,9 +98,9 @@ exports.Config = class Config
 
   #--------------------
 
-  oneshot_verify : ({which, sig}, cb) ->
+  oneshot_verify : ({which, sig, file}, cb) ->
     query = key_query @_key_version, which
-    await keyring.master_ring().oneshot_verify {query, sig, single: true}, defer err, json
+    await keyring.master_ring().oneshot_verify {query, file, sig, single: true}, defer err, json
     cb err, json
 
 #==========================================================

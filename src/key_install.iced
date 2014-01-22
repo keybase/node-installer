@@ -89,8 +89,8 @@ exports.KeyInstall = class KeyInstall
 
   revoke_all : (cb) ->
     esc = make_esc cb, "KeyInstall::revoke_all"
-    if keyset.revocation?
-      for k,v of keyset.revocation
+    if @_keyset.revocation?
+      for k,v of @_keyset.revocation
         await @revoke_1 k, v, esc defer()
     cb null
 
