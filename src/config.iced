@@ -4,12 +4,12 @@ request = require './request'
 log = require './log'
 {tmpdir} = require 'os'
 fs = require 'fs'
-{a_json_parse,make_esc} = require 'iced-error'
-{base64u} = require('iced-utils').util
-{rng} = require 'crypto'
+{chain,make_esc} = require 'iced-error'
+{a_json_parse,base64u} = require('iced-utils').util
+{prng} = require 'crypto'
 path = require 'path'
 {keyring} = require 'gpg-wrapper'
-{key_query} = require './util'
+{clean_ring,key_query} = require './util'
 
 ##==============================================================
 
@@ -45,7 +45,7 @@ exports.Config = class Config
   make_tmpdir : (cb) ->
     err = null
     unless @_tmpdir?
-      r = base64u.encode(rng(16))
+      r = base64u.encode(prng(16))
       @_tmpdir = path.join(tmpdir(), "keybase_install_#{r}");
       await fs.mkdir @_tmpdir, 0o700, defer err
       log.info "Made temporary directory: #{@_tmpdir}"
@@ -106,10 +106,19 @@ exports.Config = class Config
   #--------------------
 
   oneshot_verify : ({which, sig}, cb) ->
-    await @make_oneshot_ring which, defer err, ring 
-    await ring.verify_sig { sig }, defer err, raw unless err?
-    await a_json_parse raw, defer err, json unless err?
-    cb err, json, ring
+    ring = null
+    clean_ring = (cb) ->
+      if ring?
+        log.debug "| Cleaning up one-shot ring"
+        await ring.nuke defer err
+        log.warn "Error cleaning up 1-shot ring: #{err.message}" if err?
+      cb() 
+    cb = chain cb, clean_ring
+    esc = make_esc cb, "Config::oneshot_verify"
+    await @make_oneshot_ring which, esc defer ring 
+    await ring.verify_sig { sig }, esc defer raw
+    await a_json_parse raw, esc defer json
+    cb null, json
 
 #==========================================================
 

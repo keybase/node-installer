@@ -23,9 +23,8 @@ exports.KeyUpgrade = class KeyUpgrade
   #-----------------
 
   decrypt_and_verify : (cb) ->
-    args = { which : 'code', sig : @_sig }
-    await @config.oneshot_verify args, defer err, @_keyset, @_ring
-    cb null
+    await @config.oneshot_verify {which :'code', sig : @_sig}, defer err, @_keyset
+    cb err
 
   #-----------------
 
@@ -35,12 +34,12 @@ exports.KeyUpgrade = class KeyUpgrade
 
   run : (cb) ->
     esc = make_esc cb, "KeyUpgrade::run"
-    cb = chain cb, clean_ring.bind(null, @_ring)
     if (@_v.new = @config.index().version) > (@_v.old = @config.key_version())
       log.info "Key upgrade suggested; new version is #{@_v.new}, but we have #{@_v.old}"
       await @fetch defer()
-      await @decrypt_and_verify esc defer() 
+      await @verify esc defer() 
       await @install esc defer()
+      @config.set_key_version @_v.new
     cb null
 
 ##========================================================================
