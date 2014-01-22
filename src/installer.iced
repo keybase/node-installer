@@ -141,14 +141,6 @@ exports.Installer = class Installer extends BaseCommand
 
   #------------
 
-  run_old_2 : (cb) ->
-    esc = make_esc cb, "Installer::run"  
-    await @verify_signature esc defer()
-    await @install_package esc defer()
-    cb null
-  
-  #------------
-
   cleanup : (cb) ->
     await @config.cleanup defer e2
     log.error "In cleanup: #{e2}" if e2?
@@ -164,22 +156,19 @@ exports.Installer = class Installer extends BaseCommand
     esc = make_esc cb, "Installer::_run2"
     await @config.make_tmpdir esc defer()
     await @setup_keyring      esc defer()
-    await @setup_key          esc defer()
+    await @key_setup          esc defer()
     await @get_index          esc defer()
-    await @upgrade_key        esc defer()
-    await @upgrade_software   esc defer()
+    await @key_upgrade        esc defer()
+    await @software_upgrade   esc defer()
     log.debug "- Installer::run"
     cb null
 
   #------------
 
-  setup_key : (cb) -> (new KeySetup @config).run cb
-  get_index : (cb) -> (new GetIndex @config).run cb
-  upgrade_key : (cb) -> (new KeyUpgrade @config).run cb
-
-  #------------
-
-  upgrade_software : (cb) -> cb null
+  setup_key        : (cb) -> (new KeySetup @config).run cb
+  get_index        : (cb) -> (new GetIndex @config).run cb
+  upgrade_key      : (cb) -> (new KeyUpgrade @config).run cb
+  upgrade_software : (cb) -> (new SoftwareUpgrade @config).run cb
 
   #------------
 
@@ -188,18 +177,6 @@ exports.Installer = class Installer extends BaseCommand
       log : log,
       get_tmp_keyring_dir : () => @config.get_tmpdir()
     }
-    cb null
-
-  #------------
-
-  run_old : (cb) ->
-    @gpg = new GPG
-    esc = make_esc cb, "Installer::run"
-    await @import_key      esc defer()
-    await @fetch_package   esc defer()
-    await @fetch_signature esc defer()
-    await @write_files     esc defer()
-    await @run2 defer err
     cb null
 
 ##========================================================================

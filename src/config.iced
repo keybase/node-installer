@@ -70,15 +70,15 @@ exports.Config = class Config
   #--------------------
 
   request : (u, cb) ->
-    url = @make_url u
+    url = if u.match("^https?://") then @make_url(u) else u
     opts = 
       url : url
       headers : { "X-Keybase-Installer" : fullname() },
       maxRedirects : 10
       progress : 50000
-    log.debug "+ Fetching URL #{url}"
+    log.info "Fetching URL #{url}"
     await request opts, defer err, res, body
-    log.debug "- Fetched -> #{res?.statusCode}"
+    log.info " - Fetched -> #{res?.statusCode}"
     cb err, res, body
 
   #--------------------
