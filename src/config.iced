@@ -4,7 +4,7 @@ request = require './request'
 log = require './log'
 {tmpdir} = require 'os'
 fs = require 'fs'
-{make_esc} = require 'iced-error'
+{a_json_parse,make_esc} = require 'iced-error'
 {base64u} = require('iced-utils').util
 {rng} = require 'crypto'
 path = require 'path'
@@ -102,6 +102,14 @@ exports.Config = class Config
 
   set_index : (i) -> @_index = i
   index : () -> @_index
+
+  #--------------------
+
+  oneshot_verify : ({which, sig}, cb) ->
+    await @make_oneshot_ring which, defer err, ring 
+    await ring.verify_sig { sig }, defer err, raw unless err?
+    await a_json_parse raw, defer err, json unless err?
+    cb err, json, ring
 
 #==========================================================
 

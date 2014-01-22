@@ -2,6 +2,7 @@
 {make_esc} = require 'iced-error'
 {chain,unix_time,a_json_parse} = require('iced-utils').util
 {constants} = require './constants'
+{clean_ring} = require './util'
 
 
 ##========================================================================
@@ -39,16 +40,12 @@ exports.GetIndex = class GetIndex
 
   #--------------------------
 
-  cleanup : (cb) ->
-    if @_ring?
-      await @_ring.nuke defer err
-      log.warn "Error cleaning up 1-shot ring: #{err.message}" if err?
-    cb()
+  cleanup : (cb) -> clean_ring @ring, cb
 
   #--------------------------
 
   run : (cb) -> 
-    cb = chain cb, @cleanup.bind(@)
+    cb = chain cb, @clean.bind(@)
     esc = make_esc cb, "GetIndex::run"
     await @fetch_index esc defer()
     await @decrypt_and_verify esc defer()

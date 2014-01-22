@@ -15,3 +15,11 @@ exports.key_query = (v, which) ->
 
 #===========================================================================
 
+exports.clean_ring = (ring, cb) ->
+  if ring?
+    await ring.nuke defer err
+    log.warn "Error cleaning up 1-shot ring: #{err.message}" if err?
+  cb()
+
+#===========================================================================
+
