@@ -25,9 +25,9 @@ exports.Config = class Config
 
   #--------------------
 
-  constructor : (@argv) ->
+  constructor : (@argv, master_ring) ->
     @_tmpdir = null
-    @_master_ring = keyring.master_ring()
+    @_master_ring = master_ring or keyring.master_ring()
 
   #--------------------
 
