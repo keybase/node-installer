@@ -74,7 +74,8 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
 
   install_package : (cb) ->
     p = @package.fullpath()
-    log.info "Running npm install #{p}: this may take a minute, please be patient"
+    log.debug "| Full name for install: #{p}"
+    log.info "Running npm install #{@package.filename()}: this may take a minute, please be patient"
     args = [ "install" ,  "-g", p ]
     await npm { args }, defer err
     cb err
