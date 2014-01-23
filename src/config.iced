@@ -106,7 +106,7 @@ exports.Config = class Config
 
   oneshot_verify : ({which, sig, file}, cb) ->
     query = key_query @_key_version, which
-    await keyring.master_ring().oneshot_verify {query, file, sig, single: true}, defer err, json
+    await @master_ring().oneshot_verify {query, file, sig, single: true}, defer err, json
     cb err, json
 
 #==========================================================
