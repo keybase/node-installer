@@ -3,7 +3,7 @@
 {constants} = require './constants'
 log = require './log'
 {make_esc} = require 'iced-error'
-keyset = require './keyset'
+keyset = require '../json/keyset'
 {fpeq} = require('pgp-utils').util
 {athrow,a_json_parse} = require('iced-utils').util
 {KeyInstall} = require './key_install'
@@ -77,7 +77,8 @@ exports.KeySetup = class KeySetup
         @_key = master.make_key { key_id_64 : out[0], username : em }
         await @_key.load defer err
         @_key = null if err
-    cb err
+
+    cb err, @_key
 
   #------------
 
