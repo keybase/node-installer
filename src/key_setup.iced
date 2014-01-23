@@ -30,7 +30,10 @@ exports.KeySetup = class KeySetup
 
     err = if (a = json?.version) isnt v
       new Error "Version mismatch; expected #{v} but got #{a}"
-    else if not (a = json?.keys.code?.fingerprint)? or not(fpeq(a, keyset.keys.code.fingerprint))
+    else if not (a = json?.keys.code?.fingerprint)? 
+      console.log json
+      new Error "Fingerprint failure; none found in server version"
+    else if not(fpeq(a, (b = keyset.keys.code.fingerprint)))
       new Error "Fingerprint mismatch; expected #{a} but got #{b}"
     else null
 
