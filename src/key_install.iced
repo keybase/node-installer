@@ -83,7 +83,7 @@ exports.KeyInstall = class KeyInstall
 
   revoke_1 : (k, v, cb) ->
     log.debug "| Revoking key #{k}"
-    await keyring.master_ring().gpg { "--import" , stdin : v, quiet : true }, defer err
+    await keyring.master_ring().gpg { args : [ "--import" ] , stdin : v, quiet : true }, defer err
     cb err
 
   #-----------------
