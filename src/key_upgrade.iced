@@ -2,7 +2,6 @@
 {make_esc} = require 'iced-error'
 {keyring} = require 'gpg-wrapper'
 {fpeq} = require('pgp-utils').util
-{clean_ring} = require './util'
 {chain} = require('iced-utils').util
 
 ##========================================================================
@@ -17,7 +16,7 @@ exports.KeyUpgrade = class KeyUpgrade
   #-----------------
 
   fetch : (cb) ->
-    await @config.request "/#{@_v.old}/keyset-#{@_v.new}.asc", defer err, res, @_sig
+    await @config.request "/sig/files/#{@_v.old}/keyset-#{@_v.new}.asc", defer err, res, @_sig
     cb err
 
   #-----------------

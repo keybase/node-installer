@@ -25,7 +25,7 @@ exports.KeySetup = class KeySetup
   check_prepackaged_key : (cb) ->
     esc = make_esc cb, "KeySetup::check_prepackaged_key"
     v = keyset.version
-    await @config.request "/#{v}/keyset.json", esc defer res, body
+    await @config.request "/sig/files/#{v}/keyset.json", esc defer res, body
     await a_json_parse body, esc defer json
 
     err = if (a = json?.version) isnt v
@@ -42,8 +42,10 @@ exports.KeySetup = class KeySetup
   #------------
 
   install_prepackaged_key : (cb) ->
+    log.debug "+ Installing prepackaged key: v#{keyset.version}"
     ki = new KeyInstall @config, keyset
     await ki.run defer err
+    log.debug "- Installed: -> #{err}"
     cb err
 
   #------------

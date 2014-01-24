@@ -2,8 +2,6 @@
 {make_esc} = require 'iced-error'
 {chain,unix_time,a_json_parse} = require('iced-utils').util
 {constants} = require './constants'
-{clean_ring} = require './util'
-
 
 ##========================================================================
 
@@ -14,7 +12,7 @@ exports.GetIndex = class GetIndex
   #--------------------------
 
   fetch : (cb) ->
-    await @config.request "/#{@config.key_version()}/index.asc", defer err, res, @_signed_index
+    await @config.request "/sig/files/#{@config.key_version()}/index.asc", defer err, res, @_signed_index
     cb err
 
   #--------------------------

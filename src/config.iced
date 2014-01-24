@@ -9,7 +9,7 @@ fs = require 'fs'
 {prng} = require 'crypto'
 path = require 'path'
 {keyring} = require 'gpg-wrapper'
-{clean_ring,key_query} = require './util'
+{key_query} = require './util'
 
 ##==============================================================
 

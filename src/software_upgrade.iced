@@ -4,6 +4,7 @@
 path = require 'path'
 fs = require 'fs'
 log = require './log'
+{constants} = require './constants'
 
 ##========================================================================
 
@@ -40,7 +41,7 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
   #-------------------------
 
   fetch_package : (cb) ->
-    file = [ "dist", (@config.argv.get()?[0] or "latest-stable")].join('/')
+    file = [ "dist", (@config.argv.get()?[0] or constants.links.stable)].join('/')
     await @fetch file, defer err, @package
     cb err
 
