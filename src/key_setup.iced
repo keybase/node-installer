@@ -65,7 +65,7 @@ exports.KeySetup = class KeySetup
     err = null
     master = @config.master_ring()
     await master.read_uids_from_key {}, esc defer uids
-    comments = (uid.comment for uid in uids when (uid.email is em))
+    comments = (uid.comment for uid in uids when (uid? and (uid.email is em)))
     versions = (parseInt(m[1]) for c in comments when (m = c.match /^v(\d+)$/))
     if versions.length is 0
       log.warn "No code-signing key (#{em}) in primary GPG keychain"
