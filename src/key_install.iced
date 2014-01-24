@@ -36,7 +36,6 @@ exports.KeyInstall = class KeyInstall
   temporary_import : (cb) ->
     esc = make_esc cb, "KeyInstaller::temporary_import"
     source = @_keyset.keys.code
-    console.log source
     @_keys.code = k = @_tmp_keyring.make_key {
       key_data : source.key_data,
       fingerprint  : source.fingerprint,
