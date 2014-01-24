@@ -4,6 +4,7 @@
 {keyring} = require 'gpg-wrapper'
 {fpeq} = require('pgp-utils').util
 {hash_json} = require './util'
+log = require './log'
 
 ##========================================================================
 

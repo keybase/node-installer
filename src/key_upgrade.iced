@@ -3,6 +3,8 @@
 {keyring} = require 'gpg-wrapper'
 {fpeq} = require('pgp-utils').util
 {chain} = require('iced-utils').util
+{KeyInstall} = require './key_install'
+log = require './log'
 
 ##========================================================================
 
@@ -21,7 +23,7 @@ exports.KeyUpgrade = class KeyUpgrade
 
   #-----------------
 
-  decrypt_and_verify : (cb) ->
+  verify : (cb) ->
     await @config.oneshot_verify {which :'code', sig : @_sig}, defer err, @_keyset
     cb err
 
@@ -33,7 +35,7 @@ exports.KeyUpgrade = class KeyUpgrade
 
   run : (cb) ->
     esc = make_esc cb, "KeyUpgrade::run"
-    if (@_v.new = @config.index().version) > (@_v.old = @config.key_version())
+    if (@_v.new = @config.index().keys.latest) > (@_v.old = @config.key_version())
       log.info "Key upgrade suggested; new version is #{@_v.new}, but we have #{@_v.old}"
       await @fetch defer()
       await @verify esc defer() 
