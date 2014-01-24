@@ -41,14 +41,14 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
   #-------------------------
 
   fetch_package : (cb) ->
-    file = [ "dist", (@config.argv.get()?[0] or constants.links.stable)].join('/')
+    file = [ "pkg", (@config.argv.get()?[0] or constants.links.stable)].join('/')
     await @fetch file, defer err, @package
     cb err
 
   #-------------------------
 
   fetch_signature : (cb) ->
-    file = "/#{@config.key_version()}/#{@package.filename()}.asc"
+    file = "/sig/files/#{@config.key_version()}/#{@package.filename()}.asc"
     await @fetch file, defer err, @signature
     cb err
 
