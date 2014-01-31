@@ -32,7 +32,7 @@ exports.Config = class Config
   #--------------------
 
   master_ring : () -> @_master_ring
-  set_master_ring : (r) -> @_master_ring = r
+  set_master_ring : (r) -> @_master_ring = (r or keyring.master_ring())
 
   #--------------------
 

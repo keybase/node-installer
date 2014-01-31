@@ -18,7 +18,6 @@ $(BUILD_STAMP): \
 	lib/get_index.js \
 	lib/getopt.js \
 	lib/installer.js \
-	lib/keyset.js \
 	lib/key_setup.js \
 	lib/key_install.js \
 	lib/key_upgrade.js \

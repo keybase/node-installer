@@ -37,6 +37,7 @@ exports.Installer = class Installer extends BaseCommand
     esc = make_esc cb, "Installer::_run2"
     await @config.make_tmpdir esc defer()
     await @setup_keyring      esc defer()
+    console.log @config
     await @key_setup          esc defer()
     await @get_index          esc defer()
     await @key_upgrade        esc defer()
@@ -58,6 +59,7 @@ exports.Installer = class Installer extends BaseCommand
       log : log,
       get_tmp_keyring_dir : () => @config.get_tmpdir()
     }
+    @config.set_master_ring()
     cb null
 
 ##========================================================================
