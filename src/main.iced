@@ -38,6 +38,7 @@ Boolean Flags:
 \t-h/--help          -- Print the help message and quit
 \t-C/--skip-cleanup  -- Don't delete temporary files after install
 \t-k/--key-json      -- Output the hash of the JSON file corresponding to the built-in keyset
+\t-S/--no-https      -- Don't use HTTP. This should be safe since we check PGP sigs on everything.
 
 Options:
 \t-u/--url-prefix    -- Specify a URL prefix for fetching (default: #{constants.url_prefix})
@@ -75,14 +76,16 @@ class Main
       "h"
       "v"
       "k"
+      "C"
+      "?"
+      "S"
       "debug"
       "key-json"
       "hash"
       "help"
       "version"
-      "?"
       "skip-cleanup"
-      "C"
+      "no-https"
     ]
     @argv = getopt process.argv[2...], { flags }
     if @argv.get("v", "version")

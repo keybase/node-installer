@@ -2,7 +2,6 @@
 {BaseCommand} = require './base'
 {keyring,BufferOutStream,GPG} = require 'gpg-wrapper'
 {make_esc} = require 'iced-error'
-{signer_id_email,key,id64} = require './key'
 request = require './request'
 {fullname} = require './package'
 {constants} = require './constants'

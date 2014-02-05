@@ -36,7 +36,11 @@ exports.Config = class Config
 
   #--------------------
 
-  url_prefix : () -> @argv.get("u", "url-prefix") or constants.url_prefix
+  url_prefix : () -> 
+    if (u = @argv.get("u", "url-prefix")) then u
+    else 
+      prot = if (@argv.get("S","no-https")) then 'http' else 'https' 
+      constants.url_prefix[prot]
 
   #--------------------
 

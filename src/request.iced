@@ -28,10 +28,12 @@ class Request
   _make_opts : () ->
     opts = 
       host : @url.hostname
-      port : @url.port or 443
+      port : @url.port or (if @url.protocol is 'https' then 443 else 80)
       path : @url.path
       method : 'GET'
       headers : @headers
+
+    console.log opts
 
     if (@url.protocol is 'https:') 
       opts.mod = https 
@@ -86,7 +88,9 @@ module.exports = request = (opts, cb) ->
   lim = opts.maxRedirects or 10
   res = body = null
   found = false
+  opts.url = parse(opts.url) if typeof(opts.url) is 'string'
   for i in [0...lim] 
+    prev_url = opts.url
     await single opts, defer err, res, body
     if err? then break
     else if not (res.statusCode in [301, 302]) 
@@ -96,6 +100,12 @@ module.exports = request = (opts, cb) ->
       err = new Error "Can't find a location in header for redirect"
       break
     else 
+      url = parse(url)
+      unless url.host
+        url.host = prev_url.host
+        url.hostname = prev_url.hostname
+        url.port = prev_url.port
+        url.protocol = prev_url.protocol
       opts.url = url
 
   err = if err? then err 
