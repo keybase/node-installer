@@ -1,6 +1,6 @@
 {
   "name": "keybase-installer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Trusted installer/updater for keybase",
   "scripts": {
     "test": "make test"
@@ -15,7 +15,7 @@
   },
   "dependencies" : {
     "gpg-wrapper"        : ">=0.0.15",
-    "iced-coffee-script" : "~1.6.3-j",
+    "iced-coffee-script" : "~1.7.0-a",
     "iced-data-structures" : "~0.0.5",
     "iced-error"         : ">=0.0.8",
     "iced-logger"        : "~0.0.1",    
