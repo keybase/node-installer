@@ -28,12 +28,10 @@ class Request
   _make_opts : () ->
     opts = 
       host : @url.hostname
-      port : @url.port or (if @url.protocol is 'https' then 443 else 80)
+      port : @url.port or (if @url.protocol is 'https:' then 443 else 80)
       path : @url.path
       method : 'GET'
       headers : @headers
-
-    console.log opts
 
     if (@url.protocol is 'https:') 
       opts.mod = https 
