@@ -69,13 +69,13 @@ exports.KeyInstall = class KeyInstall
     esc = make_esc cb, "KeyInstall::full_import"
     master = keyring.master_ring()
     source = @_keyset.keys.index
-    @_keys.index = k = keyring.master_ring().make_key {
+    @_keys.index = k = master.make_key {
       key_data : source.key_data,
       fingerprint : source.fingerprint,
       username : "index@keybase.io"
     }
-    await k.sign_key null, esc defer()
     await k.save esc defer()
+    await k.sign_key null, esc defer()
     await @_keys.code.commit null, esc defer()
     cb null
 
