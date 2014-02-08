@@ -5,6 +5,7 @@ path = require 'path'
 fs = require 'fs'
 log = require './log'
 {constants} = require './constants'
+{createHash} = require 'crypto'
 
 ##========================================================================
 
@@ -15,6 +16,14 @@ class FileBundle
   constructor : (@uri, @body) ->
   filename : () -> path.basename(@uri.path)
   fullpath : () -> @_fullpath
+  version : () -> 
+    parts = @filename().splt(/-/)
+    parts = parts[1].split(/\./)[0...-1]
+    parts.join(".")
+
+  #-----
+
+  hash : () -> createHash('SHA512').update(@body).digest('hex')
 
   #-----
 
@@ -73,6 +82,16 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
 
   #-------------------------
 
+  verify_hash : (cb) ->
+    h1 = @pacakge.hash()
+    h2 = @config.index_lookup_hash @package.version()
+    err = null
+    if h1 isnt h2
+      err = new Error "Hash mismatch on #{@package.filename()}: #{h1} != #{h2}"
+    cb err
+
+  #-------------------------
+  
   install_package : (cb) ->
     p = @package.fullpath()
     log.debug "| Full name for install: #{p}"
@@ -88,6 +107,7 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
     await @fetch_package esc defer()
     await @fetch_signature esc defer()
     await @write_files esc defer()
+    await @verify_hash esc defer()
     await @verify_signature esc defer()
     await @install_package esc defer()
     cb null

@@ -108,6 +108,10 @@ exports.Config = class Config
 
   #--------------------
 
+  index_lookup_hash : (v) -> @_index.package?.all?[v]
+  
+  #--------------------
+
   oneshot_verify : ({which, sig, file}, cb) ->
     query = key_query @_key_version, which
     await @master_ring().oneshot_verify {query, file, sig, single: true}, defer err, json
