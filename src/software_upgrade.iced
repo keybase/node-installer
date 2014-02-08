@@ -17,7 +17,7 @@ class FileBundle
   filename : () -> path.basename(@uri.path)
   fullpath : () -> @_fullpath
   version : () -> 
-    parts = @filename().splt(/-/)
+    parts = @filename().split(/-/)
     parts = parts[1].split(/\./)[0...-1]
     parts.join(".")
 
@@ -77,21 +77,23 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
       which : 'code'
       sig : @signature.fullpath()
       file : @package.fullpath()
+    log.debug "| Verify signature w/ #{JSON.stringify args}"
     await @config.oneshot_verify args, defer err
     cb err
 
   #-------------------------
 
   verify_hash : (cb) ->
-    h1 = @pacakge.hash()
-    h2 = @config.index_lookup_hash @package.version()
+    h1 = @package.hash()
+    h2 = @config.index_lookup_hash (v = @package.version())
+    log.debug "| Verify hash on version #{v}: #{h1} v #{h2}"
     err = null
     if h1 isnt h2
       err = new Error "Hash mismatch on #{@package.filename()}: #{h1} != #{h2}"
     cb err
 
   #-------------------------
-  
+
   install_package : (cb) ->
     p = @package.fullpath()
     log.debug "| Full name for install: #{p}"
