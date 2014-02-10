@@ -75,8 +75,7 @@ exports.KeyInstall = class KeyInstall
       username : "index@keybase.io"
     }
     await k.save esc defer()
-    await k.sign_key null, esc defer()
-    await @_keys.code.commit null, esc defer()
+    await @_keys.code.commit {}, esc defer()
     cb null
 
   #-----------------

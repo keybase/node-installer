@@ -3,6 +3,7 @@ https = require 'https'
 http = require 'http'
 {parse} = require 'url'
 ProgressBar = require 'progress'
+urlmod = require 'url'
 
 #========================================================================
 
@@ -78,7 +79,7 @@ single = (opts, cb) -> (new Request opts).run cb
 
 #=============================================================================
 
-format_url = (u) -> if (typeof u is 'string') then u else url.format(u)
+format_url = (u) -> if (typeof u is 'string') then u else urlmod.format(u)
 
 #-----------
 
