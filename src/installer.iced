@@ -30,10 +30,15 @@ exports.Installer = class Installer extends BaseCommand
 
   #------------
 
+  find_gpg : (cb) ->
+
+  #------------
+
   run : (cb) ->
     log.debug "+ Installer::run"
     cb = chain cb, @cleanup.bind(@)
     esc = make_esc cb, "Installer::_run2"
+    await @find_gpg           esc defer()
     await @config.make_tmpdir esc defer()
     await @setup_keyring      esc defer()
     await @key_setup          esc defer()
