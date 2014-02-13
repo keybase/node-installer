@@ -30,10 +30,25 @@ exports.Installer = class Installer extends BaseCommand
 
   #------------
 
+  test_gpg : (cb) ->
+    gpg = new GPG {}
+    await gpg.test defer err
+    if err?
+      msg = """
+The command `gpg` wasn't found; you need to install it. See this page for more info:
+
+   https://keybase.io/__/command_line/keybase#prerequisites
+"""
+      err = new Error msg
+    cb err
+
+  #------------
+
   run : (cb) ->
     log.debug "+ Installer::run"
     cb = chain cb, @cleanup.bind(@)
     esc = make_esc cb, "Installer::_run2"
+    await @test_gpg           esc defer()
     await @config.make_tmpdir esc defer()
     await @setup_keyring      esc defer()
     await @key_setup          esc defer()
