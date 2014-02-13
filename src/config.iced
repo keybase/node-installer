@@ -94,8 +94,9 @@ exports.Config = class Config
   #--------------------
 
   set_key_version : (v) ->
+    if @_key_version isnt v
+      log.info "Using key version v#{v}"
     @_key_version = v
-    log.info "Using key version v#{v}"
 
   #--------------------
 

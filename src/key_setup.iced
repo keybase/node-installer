@@ -54,9 +54,7 @@ exports.KeySetup = class KeySetup
     esc = make_esc cb, "SetupKeyRunner::run"
     await @find_latest_key 'index', esc defer index_key
     await @find_latest_key 'code' , esc defer @_key, version
-    if index_key? and @_key?
-      @config.set_key_version version
-    else
+    unless index_key? and @_key?
       await @check_prepackaged_key   esc defer()
       await @install_prepackaged_key esc defer()
       @config.set_key_version keyset.version
@@ -84,6 +82,7 @@ exports.KeySetup = class KeySetup
         key = master.make_key { key_id_64 : out[0], username : em }
         await key.load defer err
         key = null if err
+        @config.set_key_version max
 
     cb err, key, max
 
