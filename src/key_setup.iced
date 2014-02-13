@@ -53,8 +53,10 @@ exports.KeySetup = class KeySetup
   run : (cb) ->
     esc = make_esc cb, "SetupKeyRunner::run"
     await @find_latest_key 'index', esc defer index_key
-    await @find_latest_key 'code' , esc defer @_key
-    unless index_key? and @_key?
+    await @find_latest_key 'code' , esc defer @_key, version
+    if index_key? and @_key?
+      @config.set_key_version version
+    else
       await @check_prepackaged_key   esc defer()
       await @install_prepackaged_key esc defer()
       @config.set_key_version keyset.version
@@ -74,7 +76,6 @@ exports.KeySetup = class KeySetup
       log.warn "No #{which}-signing key (#{em}) in primary GPG keychain"
     else
       max = Math.max versions...
-      @config.set_key_version max
       query = key_query max, which
       await master.find_keys { query }, esc defer out
       if out.length is 0     then err = new Error "Didn't find any key for query #{query}"
@@ -84,7 +85,7 @@ exports.KeySetup = class KeySetup
         await key.load defer err
         key = null if err
 
-    cb err, key
+    cb err, key, max
 
   #------------
 
