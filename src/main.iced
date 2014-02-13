@@ -42,6 +42,7 @@ Boolean Flags:
 
 Options:
 \t-u/--url-prefix    -- Specify a URL prefix for fetching (default: #{constants.url_prefix})
+\t-c/--cmd           -- Use a command other than `gpg`, which is the default
 
 Version: #{version()}
 

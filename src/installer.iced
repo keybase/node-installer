@@ -34,12 +34,19 @@ exports.Installer = class Installer extends BaseCommand
     gpg = new GPG {}
     await gpg.test defer err
     if err?
-      msg = """
-The command `gpg` wasn't found; you need to install it. See this page for more info:
-
-   https://keybase.io/__/command_line/keybase#prerequisites
+      lines = []
+      if (c = @config.get_alt_cmd())?
+        lines.push """
+The command you specified `#{c}` wasn't found; see this page for help installing `gpg`:
 """
-      err = new Error msg
+      else
+        lines.push """
+The command `gpg` wasn't found; you need to install it. See this page for more info:
+"""
+      lines.push """
+\t   https://keybase.io/__/command_line/keybase#prerequisites
+"""
+      err = new Error lines.join("\n")
     cb err
 
   #------------
@@ -48,6 +55,7 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
     log.debug "+ Installer::run"
     cb = chain cb, @cleanup.bind(@)
     esc = make_esc cb, "Installer::_run2"
+    @config.set_alt_cmd()
     await @test_gpg           esc defer()
     await @config.make_tmpdir esc defer()
     await @setup_keyring      esc defer()

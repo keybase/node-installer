@@ -8,7 +8,7 @@ fs = require 'fs'
 {a_json_parse,base64u} = require('iced-utils').util
 {prng} = require 'crypto'
 path = require 'path'
-{keyring} = require 'gpg-wrapper'
+{set_gpg_cmd,keyring} = require 'gpg-wrapper'
 {key_query} = require './util'
 
 ##==============================================================
@@ -96,6 +96,13 @@ exports.Config = class Config
   set_key_version : (v) ->
     @_key_version = v
     log.info "Using key version v#{v}"
+
+  #--------------------
+
+  set_alt_cmd : () ->
+    set_gpg_cmd @_alt_cmd if (@_alt_cmd = @argv.get("c","cmd"))
+
+  get_alt_cmd : () -> @_alt_cmd
 
   #--------------------
 
