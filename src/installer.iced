@@ -10,6 +10,7 @@ request = require './request'
 {GetIndex} = require './get_index'
 {SoftwareUpgrade} = require './software_upgrade'
 log = require './log'
+npm = require './npm'
 {chain} = require('iced-utils').util
 
 ##========================================================================
@@ -35,9 +36,9 @@ exports.Installer = class Installer extends BaseCommand
     await gpg.test defer err
     if err?
       lines = []
-      if (c = @config.get_alt_cmd())?
+      if (c = @config.get_alt_cmd('gpg'))?
         lines.push """
-The command you specified `#{c}` wasn't found; see this page for help installing `gpg`:
+The GPG command you specified `#{c}` wasn't found; see this page for help installing `gpg`:
 """
       else
         lines.push """
@@ -51,12 +52,26 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
 
   #------------
 
+  test_npm : (cb) ->
+    cmd = @config.get_cmd('npm')
+    await npm.check defer err
+    if not err? then #noop
+    else if (c = @config.get_alt_cmd('npm'))?
+      err = new Error "The npm command you specified `#{c}` wasn't found"
+    else 
+      err = new Error "Couldn't find an `npm` command in your path"
+    cb err
+
+  #------------
+
   run : (cb) ->
     log.debug "+ Installer::run"
     cb = chain cb, @cleanup.bind(@)
     esc = make_esc cb, "Installer::_run2"
-    @config.set_alt_cmd()
+    @config.set_alt_cmds()
+    npm.set_config @config
     await @test_gpg           esc defer()
+    await @test_npm           esc defer()
     await @config.make_tmpdir esc defer()
     await @setup_keyring      esc defer()
     await @key_setup          esc defer()

@@ -42,7 +42,8 @@ Boolean Flags:
 
 Options:
 \t-u/--url-prefix    -- Specify a URL prefix for fetching (default: #{constants.url_prefix})
-\t-c/--cmd           -- Use a command other than `gpg`, which is the default
+\t-g/--gpg           -- Use a GPG command other than `gpg`
+\t-n/--npm           -- Use an npm command other than `npm`
 
 Version: #{version()}
 

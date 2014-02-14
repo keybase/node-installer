@@ -28,7 +28,8 @@ exports.Config = class Config
   constructor : (@argv, master_ring) ->
     @_tmpdir = null
     @_master_ring = master_ring or keyring.master_ring()
-
+    @_alt_cmds = {}
+    
   #--------------------
 
   master_ring : () -> @_master_ring
@@ -100,10 +101,17 @@ exports.Config = class Config
 
   #--------------------
 
-  set_alt_cmd : () ->
-    set_gpg_cmd @_alt_cmd if (@_alt_cmd = @argv.get("c","cmd"))
+  set_alt_cmds : () ->
+    if (c = @argv.get("g","gpg"))?
+      @_alt_cmds.gpg = c
+      set_gpg_cmd c
+    if (n = @argv.get("n", "npm"))?
+      @_alt_cmds.npm = n
 
-  get_alt_cmd : () -> @_alt_cmd
+  #--------------------
+
+  get_alt_cmd : (k) -> @_alt_cmds[k]
+  get_cmd     : (k) -> @get_alt_cmd(k) or k
 
   #--------------------
 
