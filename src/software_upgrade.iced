@@ -65,20 +65,25 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
 
   write_files : (cb) ->
     esc = make_esc cb, "SoftwareUpgrade::write_files"
+    log.debug "+ SoftwareUpgrade::write_files"
     tmpdir = @config.get_tmpdir()
     await @package.write tmpdir, 'binary', esc defer()
     await @signature.write tmpdir, 'utf8', esc defer()
+    log.debug "- SoftwareUpgrade::write_files"
     cb null
 
   #-------------------------
 
   verify_signature : (cb) ->
+    log.debug "+ SoftwareUpgrade::verify_signature"
     args = 
       which : 'code'
       sig : @signature.fullpath()
       file : @package.fullpath()
     log.debug "| Verify signature w/ #{JSON.stringify args}"
     await @config.oneshot_verify args, defer err
+    log.info "verified signature of #{@package.filename()} against #{@signature.filename()}"
+    log.debug "- SoftwareUpgrade::verify_signature"
     cb err
 
   #-------------------------
@@ -95,23 +100,27 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
   #-------------------------
 
   install_package : (cb) ->
+    log.debug "+ SoftwareUpgrade::install_package"
     p = @package.fullpath()
     log.debug "| Full name for install: #{p}"
     log.info "Running npm install #{@package.filename()}: this may take a minute, please be patient"
     args = [ "install" ,  "-g", p ]
     await npm { args }, defer err
+    log.debug "- SoftwareUpgrade::install_package"
     cb err
 
   #-------------------------
 
   run : (cb) ->
     esc = make_esc cb, "SoftwareUpgrade::run"
+    log.debug "+ SoftwareUpgrade::run"
     await @fetch_package esc defer()
     await @fetch_signature esc defer()
     await @write_files esc defer()
     await @verify_hash esc defer()
     await @verify_signature esc defer()
     await @install_package esc defer()
+    log.debug "- SoftwareUpgrade::run"
     cb null
 
 ##========================================================================

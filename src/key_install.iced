@@ -20,6 +20,7 @@ exports.KeyInstall = class KeyInstall
   #-----------------
 
   make_tmp_keyring : (cb) ->
+    log.debug "| KeyInstaller::make_tmp_keyring"
     await keyring.TmpKeyRing.make defer err, @_tmp_keyring
     cb err
 
@@ -36,6 +37,7 @@ exports.KeyInstall = class KeyInstall
 
   temporary_import : (cb) ->
     esc = make_esc cb, "KeyInstaller::temporary_import"
+    log.debug "+ KeyInstaller::temporary_import"
     source = @_keyset.keys.code
     @_keys.code = k = @_tmp_keyring.make_key {
       key_data : source.key_data,
@@ -52,6 +54,7 @@ exports.KeyInstall = class KeyInstall
       "fingerprint mismatch after import: #{a} != #{b}"
 
     err = if msg? then new Error(msg) else null
+    log.debug "- KeyInstaller::temporary_import"
     cb err
 
   #-----------------
@@ -59,14 +62,17 @@ exports.KeyInstall = class KeyInstall
   check_self_sig : (cb) ->
     sig = @_keyset.self_sig
     @_keyset.self_sig = null
+    log.debug "+ KeyInstaller::check_self_sig"
     payload = hash_json @_keyset
     await @_keys.code.verify_sig { which : "self sig on keyset", payload, sig }, defer err
+    log.debug "- KeyInstaller::check_self_sig"
     cb err
 
   #-----------------
 
   full_import : (cb) ->
     esc = make_esc cb, "KeyInstall::full_import"
+    log.debug "+ KeyInstaller::full_import"
     master = keyring.master_ring()
     source = @_keyset.keys.index
     @_keys.index = k = master.make_key {
@@ -76,6 +82,7 @@ exports.KeyInstall = class KeyInstall
     }
     await k.save esc defer()
     await @_keys.code.commit {}, esc defer()
+    log.debug "- KeyInstaller::full_import"
     cb null
 
   #-----------------
@@ -98,12 +105,14 @@ exports.KeyInstall = class KeyInstall
 
   run : (cb) ->
     esc = make_esc cb, "KeyInstall:run2"
+    log.debug "+ KeyInstaller::run"
     cb = chain cb, @cleanup.bind(@)
     await @make_tmp_keyring esc defer()
     await @temporary_import esc defer()
     await @check_self_sig esc defer()
     await @full_import esc defer()
     await @revoke_all esc defer()
+    log.debug "- KeyInstaller::run"
     cb null
 
 ##========================================================================
