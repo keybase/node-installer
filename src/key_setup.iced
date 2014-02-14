@@ -25,6 +25,7 @@ exports.KeySetup = class KeySetup
   check_prepackaged_key : (cb) ->
     esc = make_esc cb, "KeySetup::check_prepackaged_key"
     v = keyset.version
+    log.debug "+ KeySetup::check_prepackaged_key #{v}"
     await @config.request "/sig/files/#{v}/keyset.json", esc defer res, body
     await a_json_parse body, esc defer json
 
@@ -37,6 +38,7 @@ exports.KeySetup = class KeySetup
       new Error "Fingerprint mismatch; expected #{a} but got #{b}"
     else null
 
+    log.debug "- KeySetup::check_prepackaged_key #{v} -> #{err}"
     cb err
 
   #------------
@@ -51,6 +53,7 @@ exports.KeySetup = class KeySetup
   #------------
 
   run : (cb) ->
+    log.debug "+ KeySetup::run"
     esc = make_esc cb, "SetupKeyRunner::run"
     await @find_latest_key 'index', esc defer index_key
     await @find_latest_key 'code' , esc defer @_key, version
@@ -58,12 +61,14 @@ exports.KeySetup = class KeySetup
       await @check_prepackaged_key   esc defer()
       await @install_prepackaged_key esc defer()
       @config.set_key_version keyset.version
+    log.debug "- KeySetup::run"
     cb null
 
   #------------
 
   find_latest_key : (which, cb) ->
     esc = make_esc cb, "SetupKeyRunner::find_latest_key"
+    log.debug "+ KeySetup::find_latest_key '#{which}'"
     em = constants.uid_email[which]
     err = key = null
     master = @config.master_ring()
@@ -84,6 +89,7 @@ exports.KeySetup = class KeySetup
         key = null if err
         @config.set_key_version max
 
+    log.debug "- KeySetup::find_latest_key '#{which}' -> #{err} / #{max}"
     cb err, key, max
 
   #------------
