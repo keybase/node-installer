@@ -107,7 +107,9 @@ class Main
   run : (cb) ->
     esc = make_esc cb, "run"
     await @setup    esc defer()
+    log.debug "+ cmd.run #{version()}"
     await @cmd.run  esc defer()
+    log.debug "- cmd.run"
     cb null
 
   #-----------

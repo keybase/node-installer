@@ -33,6 +33,7 @@ exports.Installer = class Installer extends BaseCommand
 
   test_gpg : (cb) ->
     gpg = new GPG {}
+    log.debug "+ Installer::test_gpg"
     await gpg.test defer err
     if err?
       lines = []
@@ -48,18 +49,21 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
 \t   https://keybase.io/__/command_line/keybase#prerequisites
 """
       err = new Error lines.join("\n")
+    log.debug "- Installer::test_gpg -> #{if err? then 'FAILED' else 'OK'}"
     cb err
 
   #------------
 
   test_npm : (cb) ->
     cmd = @config.get_cmd('npm')
+    log.debug "+ Installer::test_npm"
     await npm.check defer err
     if not err? then #noop
     else if (c = @config.get_alt_cmd('npm'))?
       err = new Error "The npm command you specified `#{c}` wasn't found"
     else 
       err = new Error "Couldn't find an `npm` command in your path"
+    log.debug "- Installer::test_npm -> #{if err? then 'FAILED' else 'OK'}"
     cb err
 
   #------------
