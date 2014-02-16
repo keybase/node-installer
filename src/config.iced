@@ -5,10 +5,13 @@ log = require './log'
 {tmpdir} = require 'os'
 fs = require 'fs'
 {chain,make_esc} = require 'iced-error'
-{a_json_parse,base64u} = require('iced-utils').util
+iutils = require 'iced-utils'
+{a_json_parse,base64u} = iutils.util
+{mkdir_p} = utils.fs
 {prng} = require 'crypto'
 path = require 'path'
 {set_gpg_cmd,keyring} = require 'gpg-wrapper'
+{AltKeyRing} = keyring
 {key_query} = require './util'
 
 ##==============================================================
@@ -21,19 +24,43 @@ url_join = (args...) ->
 
 #==========================================================
 
+home = () ->
+  process.env.HOME or process.env.HOMEPATH or process.env.USERPROFILE
+
+#==========================================================
+
 exports.Config = class Config
 
   #--------------------
 
-  constructor : (@argv, master_ring) ->
+  constructor : (@argv) ->
     @_tmpdir = null
-    @_master_ring = master_ring or keyring.master_ring()
     @_alt_cmds = {}
+    @_keyring_dir = null
     
   #--------------------
 
+  get_keyring_dir : () ->
+    unless @_keyring_dir?
+      unless (d = @argv.get("d", "keyring-dir"))?
+        d = path.join(home(), ".keybase-installer", "keyring")
+      @_keyring_dir = d
+    return @_keyring_dir
+
+  #--------------------
+
+  init_keyring : (cb) ->
+    keyring.init {
+      log : log,
+      get_tmp_keyring_dir : () => @get_tmpdir()
+    }
+    dir = @get_keyring_dir()
+    await AltKeyRing.make dir, defer err, @_master_ring
+    cb err
+
+  #--------------------
+
   master_ring : () -> @_master_ring
-  set_master_ring : (r) -> @_master_ring = (r or keyring.master_ring())
 
   #--------------------
 

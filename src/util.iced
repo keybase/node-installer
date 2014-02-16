@@ -10,8 +10,3 @@ exports.hash_json = (x) ->
   createHash('SHA512').update(strip(json_stringify_sorted(x))).digest('hex')
 
 #===========================================================================
-
-exports.key_query = (v, which) -> 
-  "(v#{v}) <#{which}@#{constants.canonical_host}>"
-
-#===========================================================================

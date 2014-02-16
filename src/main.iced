@@ -44,6 +44,7 @@ Options:
 \t-u/--url-prefix    -- Specify a URL prefix for fetching (default: #{constants.url_prefix})
 \t-g/--gpg           -- Use a GPG command other than `gpg`
 \t-n/--npm           -- Use an npm command other than `npm`
+\t-d/--keyring-dir   -- Where to store our GPG keys (default: ~/.keybase-installer/keyring)
 
 Version: #{version()}
 
