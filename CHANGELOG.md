@@ -1,9 +1,10 @@
-## 0.0.12 (2014-2-15)
+## 0.0.12
 
 Bugfixes:
 
 	- Use `iced-spawn` rather than the spawn logic in `gpg-utils`.
 	- Upgrade to `gpg-utils` to v0.0.27
+	- Hopefully some fixes for windows
 
 Cleanups:
 
