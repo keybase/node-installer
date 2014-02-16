@@ -1,6 +1,6 @@
 
 {BaseCommand} = require './base'
-{keyring,BufferOutStream,GPG} = require 'gpg-wrapper'
+{keyring,GPG} = require 'gpg-wrapper'
 {make_esc} = require 'iced-error'
 request = require './request'
 {fullname} = require './package'

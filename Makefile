@@ -16,7 +16,6 @@ $(BUILD_STAMP): \
 	lib/config.js \
 	lib/constants.js \
 	lib/get_index.js \
-	lib/getopt.js \
 	lib/installer.js \
 	lib/key_setup.js \
 	lib/key_install.js \
