@@ -19,7 +19,7 @@
     "iced-data-structures": "~0.0.5",
     "iced-error": "~0.0.8",
     "iced-logger": "~0.0.1",
-    "iced-spawn" : "~0.0.2",
+    "iced-spawn" : ">=0.0.3",
     "iced-utils": "~0.1.9",
     "pgp-utils": ">=0.0.8",
     "progress": "~1.1.3"
