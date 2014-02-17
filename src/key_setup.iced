@@ -53,15 +53,17 @@ exports.KeySetup = class KeySetup
     esc = make_esc cb, "SetupKeyRunner::find_keyset"
     keys = {}
     found = false
+    found_code = false
     await @find_key { which : 'code', version : version }, esc defer keys.code, v
     if keys.code?
+      found_code = true
       await @find_key { which : 'index', version : v }, esc defer keys.index
       if keys.index?
         keys.version = v
         @config.set_keys keys
         found = true
     log.debug "- KeySetup::find_keys #{found} #{if v? then '@ version ' + v else ''}"
-    cb null, found, keys
+    cb null, found, keys, found_code
 
   #------------
 
@@ -70,16 +72,19 @@ exports.KeySetup = class KeySetup
     esc = make_esc cb, "SetupKeyRunner::run"
 
     # First try to find the best keyset, the most advanced version number
-    await @find_keyset null, esc defer found
+    await @find_keyset null, esc defer found, keys, found_code
 
-    # If that fails, try to find the one that comes source-bundled
-    await @find_keyset keyset.version, esc defer found unless found
+    # If that fails, try to find the one that comes source-bundled.  It could be
+    # we had only the code key and node the index key.  If we didn't find either
+    # key, we don't have any choice.
+    if not found and found_code
+      await @find_keyset keyset.version, esc defer found unless found
 
     # And if that fails, we need to install the prepackaged keys
     unless found
       await @check_prepackaged_keyset   esc defer()
       await @install_prepackaged_keyset esc defer()
-      
+
     log.debug "- KeySetup::run (found=#{found})"
     cb null
 
@@ -110,7 +115,9 @@ exports.KeySetup = class KeySetup
       if version? and wanted_key then break
 
     if not wanted_key?
-      log.warn "No #{which}-signing key (#{em}) in primary GPG keychain (@ version #{wanted_v})"
+      msg = "No #{which}-signing key (#{em}) in GPG keychain" 
+      if version? then msg += " (at version #{version})"
+      log.warn msg
     else
       ret = @config.master_ring().make_key { 
         fingerprint : wanted_key.fingerprint(), 
