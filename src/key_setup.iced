@@ -60,7 +60,7 @@ exports.KeySetup = class KeySetup
         keys.version = v
         @config.set_keys keys
         found = true
-    log.debug "- KeySetup::find_both_keys #{found} (@ version #{version})"
+    log.debug "- KeySetup::find_both_keys #{found} #{if v? then '@ version ' + v else ''}"
     cb null, found, keys
 
   #------------
@@ -83,6 +83,9 @@ exports.KeySetup = class KeySetup
     err = key = null
     all_keys = @config.keyring_index().lookup().email.get(em)
 
+    # Go through all of the relevant keys, and all of their
+    # different UIDs.  Find either the version given, or the
+    # one with maximum version ID
     wanted_key = null
     wanted_v = null
     for key in all_keys
@@ -96,11 +99,12 @@ exports.KeySetup = class KeySetup
           wanted_key = key
           wanted_v = v
       if version? and wanted_key then break
+
     if not wanted_key?
-      log.warn "No #{which}-signing key (#{em}) in primary GPG keychain (@ version #{version})"
+      log.warn "No #{which}-signing key (#{em}) in primary GPG keychain (@ version #{wanted_v})"
     else
-      key = @config.master_keyring().make_key { 
-        fingerprint : wanted_key.fingerpint(), 
+      key = @config.master_ring().make_key { 
+        fingerprint : wanted_key.fingerprint(), 
         username : wanted_key.emails()[0]
       }
       await key.load defer err

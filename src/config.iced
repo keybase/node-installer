@@ -125,7 +125,7 @@ exports.Config = class Config
 
   set_keys : (keys) ->
     if not @_keys? or @_keys.version isnt keys.version
-      log.info "Using keyset version v#{v}"
+      log.info "Using keyset version v#{keys.version}"
       @_keys = keys
 
   #--------------------
@@ -144,7 +144,7 @@ exports.Config = class Config
 
   #--------------------
 
-  key_version : () -> @_key_version
+  key_version : () -> @_keys.version
 
   #--------------------
 

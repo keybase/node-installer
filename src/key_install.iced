@@ -73,7 +73,7 @@ exports.KeyInstall = class KeyInstall
   full_import : (cb) ->
     esc = make_esc cb, "KeyInstall::full_import"
     log.debug "+ KeyInstaller::full_import"
-    master = keyring.master_ring()
+    master = @config.master_ring()
     source = @_keyset.keys.index
     @_keys.index = k = master.make_key {
       key_data : source.key_data,
@@ -81,7 +81,7 @@ exports.KeyInstall = class KeyInstall
       username : "index@keybase.io"
     }
     await k.save esc defer()
-    await @_keys.code.commit {}, esc defer()
+    await @_keys.code.commit { ring : master }, esc defer()
     log.debug "- KeyInstaller::full_import"
     cb null
 
