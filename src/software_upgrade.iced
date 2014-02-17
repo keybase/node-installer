@@ -29,7 +29,9 @@ class FileBundle
 
   write : (dir, encoding, cb) ->
     p = @_fullpath = path.join(dir, @filename())
-    await fs.writeFile p, @body, { mode : 0o400, encoding }, defer err
+    # On windows, we need the files writable to be able to throw them away.
+    mode = if process.platform is 'win32' then 0o600 else 0o400
+    await fs.writeFile p, @body, { mode, encoding }, defer err
     cb err
 
 ##========================================================================
