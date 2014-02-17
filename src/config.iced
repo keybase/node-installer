@@ -66,6 +66,13 @@ exports.Config = class Config
 
   #--------------------
 
+  set_master_ring : (r, cb) -> 
+    @_master_ring = r
+    await @_master_ring.index defer err, @_keyring_index
+    cb err
+
+  #--------------------
+
   url_prefix : () -> 
     if (u = @argv.get("u", "url-prefix")) then u
     else 

@@ -1,3 +1,13 @@
+## 0.1.1 (2014-02-17)
+
+Bugfixes:
+
+	- Upgrade to gpg-wrapper v0.0.29 final
+
+Features:
+
+	- Add config::set_master_ring for server-ops
+
 ## 0.1.0 (2014-02-17)
 
 Bugfixes:
