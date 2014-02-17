@@ -2,15 +2,17 @@
 
 Bugfixes:
 
-	- Upgrade to gpg-wrapper v0.0.29 final
+	- Upgrade to gpg-wrapper v0.0.30
 	- Fix bug in key upgrade protocol, with setting the final key version causing a crash
 	- Fix bug in key upgrade protocol for if we have the code key but not the index key
 	- Fallback to a lower keyring-resident key if the most recent one failed in the above
 	check. It's always safer for to use the local keys than the ones that came with the software.
+	- Fix bug #31, a cleanup error in Windows.
 
 Features:
 
 	- Add config::set_master_ring for server-ops
+	- Operational on Windows!
 
 ## 0.1.0 (2014-02-17)
 
