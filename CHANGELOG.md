@@ -5,6 +5,8 @@ Bugfixes:
 	- Use `iced-spawn` rather than the spawn logic in `gpg-utils`.
 	- Upgrade to `gpg-utils` to v0.0.27
 	- Hopefully some fixes for windows
+	- Fix bug #18; store keys to a private keyring rather than the main
+	  keyring, this is much safer.
 
 Cleanups:
 

@@ -71,17 +71,17 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
   run : (cb) ->
     log.debug "+ Installer::run"
     cb = chain cb, @cleanup.bind(@)
-    esc = make_esc cb, "Installer::_run2"
+    esc = make_esc cb, "Installer::run"
     @config.set_alt_cmds()
     npm.set_config @config
-    await @test_gpg           esc defer()
-    await @test_npm           esc defer()
-    await @config.make_tmpdir esc defer()
-    await @setup_keyring      esc defer()
-    await @key_setup          esc defer()
-    await @get_index          esc defer()
-    await @key_upgrade        esc defer()
-    await @software_upgrade   esc defer()
+    await @test_gpg            esc defer()
+    await @test_npm            esc defer()
+    await @config.make_tmpdir  esc defer()
+    await @config.init_keyring esc defer()
+    await @key_setup           esc defer()
+    await @get_index           esc defer()
+    await @key_upgrade         esc defer()
+    await @software_upgrade    esc defer()
     log.debug "- Installer::run"
     cb null
 
@@ -91,16 +91,6 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
   get_index        : (cb) -> (new GetIndex @config).run cb
   key_upgrade      : (cb) -> (new KeyUpgrade @config).run cb
   software_upgrade : (cb) -> (new SoftwareUpgrade @config).run cb
-
-  #------------
-
-  setup_keyring : (cb) ->
-    keyring.init {
-      log : log,
-      get_tmp_keyring_dir : () => @config.get_tmpdir()
-    }
-    @config.set_master_ring()
-    cb null
 
 ##========================================================================
 

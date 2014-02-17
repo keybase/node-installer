@@ -2,6 +2,7 @@
 {make_esc} = require 'iced-error'
 {chain,unix_time,a_json_parse} = require('iced-utils').util
 {constants} = require './constants'
+log = require './log'
 
 ##========================================================================
 
@@ -31,10 +32,12 @@ exports.GetIndex = class GetIndex
   #--------------------------
 
   run : (cb) -> 
+    log.debug "+ GetIndex::run"
     esc = make_esc cb, "GetIndex::run"
     await @fetch esc defer()
     await @verify esc defer()
     @config.set_index @_index
+    log.debug "- GetIndex::run"
     cb null
   
 ##========================================================================

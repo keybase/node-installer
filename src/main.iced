@@ -34,16 +34,18 @@ class HelpCommand extends BaseCommand
 \tversion.
 
 Boolean Flags:
+\t-d/--debug         -- Turn on debugging output
 \t-v/--version       -- Print the version and quit
 \t-h/--help          -- Print the help message and quit
 \t-C/--skip-cleanup  -- Don't delete temporary files after install
-\t-k/--key-json      -- Output the hash of the JSON file corresponding to the built-in keyset
+\t-j/--key-json      -- Output the hash of the JSON file corresponding to the built-in keyset
 \t-S/--no-https      -- Don't use HTTP. This should be safe since we check PGP sigs on everything.
 
 Options:
 \t-u/--url-prefix    -- Specify a URL prefix for fetching (default: #{constants.url_prefix})
 \t-g/--gpg           -- Use a GPG command other than `gpg`
 \t-n/--npm           -- Use an npm command other than `npm`
+\t-k/--keyring-dir   -- Where to store our GPG keys (default: ~/.keybase-installer/keyring)
 
 Version: #{version()}
 
@@ -77,7 +79,7 @@ class Main
       "d"
       "h"
       "v"
-      "k"
+      "j"
       "C"
       "?"
       "S"
@@ -94,7 +96,7 @@ class Main
       @cmd = new VersionCommand()
     else if @argv.get("h", "?", "help")
       @cmd = new HelpCommand()
-    else if @argv.get("k", "key-json")
+    else if @argv.get("j", "key-json")
       @cmd = new KeyJsonCommand @argv
     else if @argv.get().length > 1
       @cmd = new HelpCommand @argv, (new Error "Usage error: only zero or one argument allowed")

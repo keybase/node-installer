@@ -5,11 +5,13 @@ log = require './log'
 {tmpdir} = require 'os'
 fs = require 'fs'
 {chain,make_esc} = require 'iced-error'
-{a_json_parse,base64u} = require('iced-utils').util
+iutils = require 'iced-utils'
+{a_json_parse,base64u} = iutils.util
+{mkdir_p} = iutils.fs
 {prng} = require 'crypto'
 path = require 'path'
 {set_gpg_cmd,keyring} = require 'gpg-wrapper'
-{key_query} = require './util'
+{AltKeyRing} = keyring
 
 ##==============================================================
 
@@ -21,19 +23,46 @@ url_join = (args...) ->
 
 #==========================================================
 
+home = () ->
+  process.env.HOME or process.env.HOMEPATH or process.env.USERPROFILE
+
+#==========================================================
+
 exports.Config = class Config
 
   #--------------------
 
-  constructor : (@argv, master_ring) ->
+  constructor : (@argv) ->
     @_tmpdir = null
-    @_master_ring = master_ring or keyring.master_ring()
     @_alt_cmds = {}
+    @_keyring_dir = null
     
   #--------------------
 
+  get_keyring_dir : () ->
+    unless @_keyring_dir?
+      unless ((d = @argv.get("k", "keyring-dir"))?)
+        d = path.join(home(), ".keybase-installer", "keyring")
+      @_keyring_dir = d
+    return @_keyring_dir
+
+  #--------------------
+
+  init_keyring : (cb) ->
+    keyring.init {
+      log : log,
+      get_tmp_keyring_dir : () => @get_tmpdir()
+    }
+    dir = @get_keyring_dir()
+    esc = make_esc cb, "Config::init_keyring"
+    await AltKeyRing.make dir, esc defer @_master_ring
+    await @_master_ring.index esc defer @_keyring_index
+    cb null
+
+  #--------------------
+
+  keyring_index : () -> @_keyring_index
   master_ring : () -> @_master_ring
-  set_master_ring : (r) -> @_master_ring = (r or keyring.master_ring())
 
   #--------------------
 
@@ -94,10 +123,10 @@ exports.Config = class Config
 
   #--------------------
 
-  set_key_version : (v) ->
-    if @_key_version isnt v
-      log.info "Using key version v#{v}"
-    @_key_version = v
+  set_keys : (keys) ->
+    if not @_keys? or @_keys.version isnt keys.version
+      log.info "Using keyset version v#{keys.version}"
+      @_keys = keys
 
   #--------------------
 
@@ -115,7 +144,7 @@ exports.Config = class Config
 
   #--------------------
 
-  key_version : () -> @_key_version
+  key_version : () -> @_keys.version
 
   #--------------------
 
@@ -129,7 +158,7 @@ exports.Config = class Config
   #--------------------
 
   oneshot_verify : ({which, sig, file}, cb) ->
-    query = key_query @_key_version, which
+    query = @_keys[which].fingerprint()
     await @master_ring().oneshot_verify {query, file, sig, single: true}, defer err, json
     cb err, json
 

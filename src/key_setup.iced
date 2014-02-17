@@ -1,4 +1,3 @@
-
 {keyring} = require 'gpg-wrapper'
 {constants} = require './constants'
 log = require './log'
@@ -7,23 +6,17 @@ keyset = require '../json/keyset'
 {fpeq} = require('pgp-utils').util
 {athrow,a_json_parse} = require('iced-utils').util
 {KeyInstall} = require './key_install'
-{key_query} = require './util'
 
 ##========================================================================
 
 exports.KeySetup = class KeySetup
 
   constructor : (@config) ->
-    @_key = null
 
   #------------
 
-  key : () -> @_key
-
-  #------------
-
-  check_prepackaged_key : (cb) ->
-    esc = make_esc cb, "KeySetup::check_prepackaged_key"
+  check_prepackaged_keyset : (cb) ->
+    esc = make_esc cb, "KeySetup::check_prepackaged_keyset"
     v = keyset.version
     log.debug "+ KeySetup::check_prepackaged_key #{v}"
     await @config.request "/sig/files/#{v}/keyset.json", esc defer res, body
@@ -38,59 +31,87 @@ exports.KeySetup = class KeySetup
       new Error "Fingerprint mismatch; expected #{a} but got #{b}"
     else null
 
-    log.debug "- KeySetup::check_prepackaged_key #{v} -> #{err}"
+    log.debug "- KeySetup::check_prepackaged_keyset #{v} -> #{err}"
     cb err
 
   #------------
 
-  install_prepackaged_key : (cb) ->
-    log.debug "+ Installing prepackaged key: v#{keyset.version}"
+  install_prepackaged_keyset : (cb) ->
+    log.debug "+ Installing prepackaged keyset: v#{keyset.version}"
     ki = new KeyInstall @config, keyset
     await ki.run defer err
+    keys = ki.keys()
+    keys.version = keyset.version
+    @config.set_keys keys
     log.debug "- Installed: -> #{err}"
     cb err
+
+  #------------
+
+  find_keyset : (cb) ->
+    log.debug "+ KeySetup::find_keyset"
+    esc = make_esc cb, "SetupKeyRunner::find_keyset"
+    keys = {}
+    found = false
+    await @find_key { which : 'code' }, esc defer keys.code, v
+    if keys.code?
+      await @find_key { which : 'index', version : v }, esc defer keys.index
+      if keys.index?
+        keys.version = v
+        @config.set_keys keys
+        found = true
+    log.debug "- KeySetup::find_both_keys #{found} #{if v? then '@ version ' + v else ''}"
+    cb null, found, keys
 
   #------------
 
   run : (cb) ->
     log.debug "+ KeySetup::run"
     esc = make_esc cb, "SetupKeyRunner::run"
-    await @find_latest_key 'index', esc defer index_key
-    await @find_latest_key 'code' , esc defer @_key, version
-    unless index_key? and @_key?
-      await @check_prepackaged_key   esc defer()
-      await @install_prepackaged_key esc defer()
-      @config.set_key_version keyset.version
-    log.debug "- KeySetup::run"
+    await @find_keyset esc defer found
+    unless found
+      await @check_prepackaged_keyset   esc defer()
+      await @install_prepackaged_keyset esc defer()
+    log.debug "- KeySetup::run (found=#{found})"
     cb null
 
   #------------
 
-  find_latest_key : (which, cb) ->
-    esc = make_esc cb, "SetupKeyRunner::find_latest_key"
+  find_key : ({which, version}, cb) ->
     log.debug "+ KeySetup::find_latest_key '#{which}'"
     em = constants.uid_email[which]
     err = key = null
-    master = @config.master_ring()
-    await master.read_uids_from_key {}, esc defer uids
-    comments = (uid.comment for uid in uids when (uid? and (uid.email is em)))
-    versions = (parseInt(m[1]) for c in comments when (m = c.match /^v(\d+)$/))
-    if versions.length is 0
-      log.warn "No #{which}-signing key (#{em}) in primary GPG keychain"
-    else
-      max = Math.max versions...
-      query = key_query max, which
-      await master.find_keys { query }, esc defer out
-      if out.length is 0     then err = new Error "Didn't find any key for query #{query}"
-      else if out.length > 1 then err = new Error "Found too many keys that matched #{query}"
-      else
-        key = master.make_key { key_id_64 : out[0], username : em }
-        await key.load defer err
-        key = null if err
-        @config.set_key_version max
+    all_keys = @config.keyring_index().lookup().email.get(em)
 
-    log.debug "- KeySetup::find_latest_key '#{which}' -> #{err} / #{max}"
-    cb err, key, max
+    # Go through all of the relevant keys, and all of their
+    # different UIDs.  Find either the version given, or the
+    # one with maximum version ID
+    wanted_key = null
+    wanted_v = null
+    for key in all_keys
+      for uid in key.userids() when (m = uid.comment?.match /^v(\d+)$/ )
+        v = parseInt(m[1],10)
+        if version? and (v is version)
+          wanted_key = key
+          wanted_v = v
+          break
+        else if not wanted_v? or v > wanted_v
+          wanted_key = key
+          wanted_v = v
+      if version? and wanted_key then break
+
+    if not wanted_key?
+      log.warn "No #{which}-signing key (#{em}) in primary GPG keychain (@ version #{wanted_v})"
+    else
+      key = @config.master_ring().make_key { 
+        fingerprint : wanted_key.fingerprint(), 
+        username : wanted_key.emails()[0]
+      }
+      await key.load defer err
+      if err? then key = null
+
+    log.debug "- KeySetup::find_latest_key '#{which}' -> #{err} / #{wanted_v}"
+    cb err, key, wanted_v
 
   #------------
 
