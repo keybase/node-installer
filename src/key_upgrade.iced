@@ -29,7 +29,14 @@ exports.KeyUpgrade = class KeyUpgrade
 
   #-----------------
 
-  install : (cb) -> (new KeyInstall @config, @_keyset).run cb
+  install : (cb) -> 
+    ki = new KeyInstall @config, @_keyset
+    await ki.run defer err
+    unless err?
+      keys = ki.keys()
+      keys.version = @_v.new
+      @config.set_keys keys
+    cb err
 
   #-----------------
 
@@ -40,7 +47,6 @@ exports.KeyUpgrade = class KeyUpgrade
       await @fetch defer()
       await @verify esc defer() 
       await @install esc defer()
-      @config.set_key_version @_v.new
     cb null
 
 ##========================================================================

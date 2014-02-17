@@ -3,6 +3,10 @@
 Bugfixes:
 
 	- Upgrade to gpg-wrapper v0.0.29 final
+	- Fix bug in key upgrade protocol, with setting the final key version causing a crash
+	- Fix bug in key upgrade protocol for if we have the code key but not the index key
+	- Fallback to a lower keyring-resident key if the most recent one failed in the above
+	check. It's always safer for to use the local keys than the ones that came with the software.
 
 Features:
 

@@ -110,6 +110,7 @@ exports.KeyInstall = class KeyInstall
   run : (cb) ->
     esc = make_esc cb, "KeyInstall:run2"
     log.debug "+ KeyInstaller::run"
+    log.info "Installing keyset version #{@_keyset.version}"
     cb = chain cb, @cleanup.bind(@)
     await @make_tmp_keyring esc defer()
     await @temporary_import esc defer()

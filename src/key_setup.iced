@@ -48,19 +48,19 @@ exports.KeySetup = class KeySetup
 
   #------------
 
-  find_keyset : (cb) ->
-    log.debug "+ KeySetup::find_keyset"
+  find_keyset : (version, cb) ->
+    log.debug "+ KeySetup::find_keyset #{version}"
     esc = make_esc cb, "SetupKeyRunner::find_keyset"
     keys = {}
     found = false
-    await @find_key { which : 'code' }, esc defer keys.code, v
+    await @find_key { which : 'code', version : version }, esc defer keys.code, v
     if keys.code?
       await @find_key { which : 'index', version : v }, esc defer keys.index
       if keys.index?
         keys.version = v
         @config.set_keys keys
         found = true
-    log.debug "- KeySetup::find_both_keys #{found} #{if v? then '@ version ' + v else ''}"
+    log.debug "- KeySetup::find_keys #{found} #{if v? then '@ version ' + v else ''}"
     cb null, found, keys
 
   #------------
@@ -68,17 +68,25 @@ exports.KeySetup = class KeySetup
   run : (cb) ->
     log.debug "+ KeySetup::run"
     esc = make_esc cb, "SetupKeyRunner::run"
-    await @find_keyset esc defer found
+
+    # First try to find the best keyset, the most advanced version number
+    await @find_keyset null, esc defer found
+
+    # If that fails, try to find the one that comes source-bundled
+    await @find_keyset keyset.version, esc defer found unless found
+
+    # And if that fails, we need to install the prepackaged keys
     unless found
       await @check_prepackaged_keyset   esc defer()
       await @install_prepackaged_keyset esc defer()
+      
     log.debug "- KeySetup::run (found=#{found})"
     cb null
 
   #------------
 
   find_key : ({which, version}, cb) ->
-    log.debug "+ KeySetup::find_latest_key '#{which}'"
+    log.debug "+ KeySetup::find_latest_key #{which}@#{version}"
     em = constants.uid_email[which]
     err = key = null
     all_keys = @config.keyring_index().lookup().email.get(em)
@@ -88,6 +96,7 @@ exports.KeySetup = class KeySetup
     # one with maximum version ID
     wanted_key = null
     wanted_v = null
+    ret = null
     for key in all_keys
       for uid in key.userids() when (m = uid.comment?.match /^v(\d+)$/ )
         v = parseInt(m[1],10)
@@ -95,7 +104,7 @@ exports.KeySetup = class KeySetup
           wanted_key = key
           wanted_v = v
           break
-        else if not wanted_v? or v > wanted_v
+        else if not version? and (wanted_v? or v > wanted_v)
           wanted_key = key
           wanted_v = v
       if version? and wanted_key then break
@@ -103,15 +112,15 @@ exports.KeySetup = class KeySetup
     if not wanted_key?
       log.warn "No #{which}-signing key (#{em}) in primary GPG keychain (@ version #{wanted_v})"
     else
-      key = @config.master_ring().make_key { 
+      ret = @config.master_ring().make_key { 
         fingerprint : wanted_key.fingerprint(), 
         username : wanted_key.emails()[0]
       }
-      await key.load defer err
-      if err? then key = null
+      await ret.load defer err
+      if err? then ret = null
 
-    log.debug "- KeySetup::find_latest_key '#{which}' -> #{err} / #{wanted_v}"
-    cb err, key, wanted_v
+    log.debug "- KeySetup::find_latest_key #{which}@#{version} -> #{err} / #{wanted_v} / #{key?.fingerprint()}"
+    cb err, ret, wanted_v
 
   #------------
 
