@@ -103,6 +103,10 @@ exports.KeyInstall = class KeyInstall
 
   #-----------------
 
+  keys : () -> @_keys
+
+  #-----------------
+
   run : (cb) ->
     esc = make_esc cb, "KeyInstall:run2"
     log.debug "+ KeyInstaller::run"

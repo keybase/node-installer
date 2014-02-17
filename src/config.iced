@@ -7,12 +7,11 @@ fs = require 'fs'
 {chain,make_esc} = require 'iced-error'
 iutils = require 'iced-utils'
 {a_json_parse,base64u} = iutils.util
-{mkdir_p} = utils.fs
+{mkdir_p} = iutils.fs
 {prng} = require 'crypto'
 path = require 'path'
 {set_gpg_cmd,keyring} = require 'gpg-wrapper'
 {AltKeyRing} = keyring
-{key_query} = require './util'
 
 ##==============================================================
 
@@ -42,7 +41,7 @@ exports.Config = class Config
 
   get_keyring_dir : () ->
     unless @_keyring_dir?
-      unless (d = @argv.get("d", "keyring-dir"))?
+      unless ((d = @argv.get("k", "keyring-dir"))?)
         d = path.join(home(), ".keybase-installer", "keyring")
       @_keyring_dir = d
     return @_keyring_dir
@@ -55,11 +54,14 @@ exports.Config = class Config
       get_tmp_keyring_dir : () => @get_tmpdir()
     }
     dir = @get_keyring_dir()
-    await AltKeyRing.make dir, defer err, @_master_ring
-    cb err
+    esc = make_esc cb, "Config::init_keyring"
+    await AltKeyRing.make dir, esc defer @_master_ring
+    await @_master_ring.index esc defer @_keyring_index
+    cb null
 
   #--------------------
 
+  keyring_index : () -> @_keyring_index
   master_ring : () -> @_master_ring
 
   #--------------------
@@ -121,10 +123,10 @@ exports.Config = class Config
 
   #--------------------
 
-  set_key_version : (v) ->
-    if @_key_version isnt v
-      log.info "Using key version v#{v}"
-    @_key_version = v
+  set_keys : (keys) ->
+    if not @_keys? or @_keys.version isnt keys.version
+      log.info "Using keyset version v#{v}"
+      @_keys = keys
 
   #--------------------
 
@@ -156,7 +158,7 @@ exports.Config = class Config
   #--------------------
 
   oneshot_verify : ({which, sig, file}, cb) ->
-    query = key_query @_key_version, which
+    query = @_keys[which].fingerprint()
     await @master_ring().oneshot_verify {query, file, sig, single: true}, defer err, json
     cb err, json
 
