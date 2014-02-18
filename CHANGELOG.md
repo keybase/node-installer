@@ -1,3 +1,17 @@
+## 0.1.3 (2014-02-18)
+
+Bugfixes:
+
+  - Upgrade to gpg-wrapper v0.0.32 to solve a bug in keydir creation
+
+## 0.1.2 (2014-02-18)
+
+Bugfixes:
+
+  - More bugfixes on windows; we had a crash on keyring on a Windows 7 Pro,
+    GPG 2.0.22. I think it's this bug that gpg won't index the keyring if there's not a 
+    pubring.gpg file there.  Fix with an upgrade to gpg-wrapper v0.0.31.
+
 ## 0.1.1 (2014-02-17)
 
 Bugfixes:
