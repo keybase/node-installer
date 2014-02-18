@@ -1,6 +1,6 @@
 {
   "name": "keybase-installer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Trusted installer/updater for keybase",
   "scripts": {
     "test": "make test"
@@ -14,7 +14,7 @@
     "url": "git://github.com/keybase/node-installer"
   },
   "dependencies": {
-    "gpg-wrapper": ">=0.0.29",
+    "gpg-wrapper": ">=0.0.31",
     "iced-coffee-script": "~1.7.1-a",
     "iced-data-structures": "~0.0.5",
     "iced-error": "~0.0.8",
