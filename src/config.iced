@@ -24,7 +24,7 @@ url_join = (args...) ->
 #==========================================================
 
 home = () ->
-  process.env.HOME or process.env.HOMEPATH or process.env.USERPROFILE
+  process.env.HOME or process.env.USERPROFILE
 
 #==========================================================
 
