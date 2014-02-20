@@ -118,7 +118,9 @@ class Main
 
   main : () ->
     await @run defer err
-    if err? then log.error err.message
+    if err?
+      log.error err.message
+      log.warn err.stderr.toString('utf8') if err.stderr?
     process.exit if err? then -2 else 0
 
   #-----------

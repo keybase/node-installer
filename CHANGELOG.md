@@ -1,3 +1,9 @@
+## 0.1.5 (2014-02-20)
+
+Features:
+
+  - Better error messages if you lack the permissions to run npm install without root.
+
 ## 0.1.4 (2014-02-18)
 
 Bugfixes:

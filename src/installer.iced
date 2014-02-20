@@ -12,6 +12,7 @@ request = require './request'
 log = require './log'
 npm = require './npm'
 {chain} = require('iced-utils').util
+path = require 'path'
 
 ##========================================================================
 
@@ -68,6 +69,10 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
 
   #------------
 
+  test_npm_install : (cb) -> npm.test_install cb
+
+  #------------
+
   run : (cb) ->
     log.debug "+ Installer::run"
     cb = chain cb, @cleanup.bind(@)
@@ -76,6 +81,7 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
     npm.set_config @config
     await @test_gpg            esc defer()
     await @test_npm            esc defer()
+    await @test_npm_install    esc defer()
     await @config.make_tmpdir  esc defer()
     await @config.init_keyring esc defer()
     await @key_setup           esc defer()
