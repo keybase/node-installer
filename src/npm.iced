@@ -41,7 +41,7 @@ exports.test_install = (cb) ->
     await fs.writeFile test, (new Buffer []), { mode : 0o600 }, defer err
     if err?
       if err.code in [ 'EACCES', 'EPERM' ]
-        err = new Error "Permission denied installing to #{dirname}; you probably need sudo/root privileges (we install whenever `npm` installs to)"
+        err = new Error "Permission denied installing to #{dirname}: try running `sudo keybase-installer`"
       else
         err = new Error "Can't write to directory #{dirname}: #{err.code}"
     else
