@@ -40,7 +40,10 @@ exports.test_install = (cb) ->
     log.debug "| Writing temporary file, to see if install will work: #{test}"
     await fs.writeFile test, (new Buffer []), { mode : 0o600 }, defer err
     if err?
-      err = new Error "Can't write to directory #{dirname}: #{err.message}"
+      if e.code in [ 'EACCES', 'EPERM' ]
+        err = new Error "Permission denied installing to #{dirname}; you probably need sudo/root privileges (we install whenever `npm` installs to)"
+      else
+        err = new Error "Can't write to directory #{dirname}: #{err.code}"
     else
       await fs.unlink test, defer tmp
       if tmp?
