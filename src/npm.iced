@@ -4,6 +4,7 @@ path = require 'path'
 fs = require 'fs'
 log = require './log'
 {prng} = require 'crypto'
+os = require 'os'
 
 ##-----------------------------------
 _config = null
@@ -41,7 +42,13 @@ exports.test_install = (cb) ->
     await fs.writeFile test, (new Buffer []), { mode : 0o600 }, defer err
     if err?
       if err.code in [ 'EACCES', 'EPERM' ]
-        err = new Error "Permission denied installing to #{dirname}: try running `sudo keybase-installer`"
+        if os.platform() is 'win32' # this is actually any version of windows
+          err = new Error "Permission denied - Node was installed as Administrator.\n" +
+            "\n  Windows solution: launch another command window by right-clicking" +
+            "\n  and selecting \"Run as Administrator\"," +
+            "\n  then run `keybase-installer`. (Then you may close the window.)\n"
+        else
+          err = new Error "Permission denied installing to #{dirname}: try running `sudo keybase-installer`"
       else
         err = new Error "Can't write to directory #{dirname}: #{err.code}"
     else
