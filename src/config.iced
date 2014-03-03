@@ -81,6 +81,10 @@ exports.Config = class Config
 
   #--------------------
 
+  install_prefix : () -> @argv.get("p", "prefix")
+
+  #--------------------
+
   make_url : (u) -> url_join @url_prefix(), u
 
   #--------------------

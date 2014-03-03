@@ -46,6 +46,7 @@ Options:
 \t-g/--gpg           -- Use a GPG command other than `gpg`
 \t-n/--npm           -- Use an npm command other than `npm`
 \t-k/--keyring-dir   -- Where to store our GPG keys (default: ~/.keybase-installer/keyring)
+\t-p/--prefix        -- Install to the given prefix (rather than where `npm` installs by default)
 
 Version: #{version()}
 

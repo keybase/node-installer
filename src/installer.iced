@@ -73,6 +73,38 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
 
   #------------
 
+  welcome_message : (cb) ->
+    console.log """
+=====================================================================
+
+Welcome to keybase.io!
+
+You have now successfully installed the command-line client.  If you're new to the 
+service run:
+
+     $ keybase signup        # signup for a new account
+     $ keybase push          # to push your public key to the server
+         -- or --   
+     $ keybase gen           # generate a new key and push it
+
+If you already signed up via the Web or another keybase client, try:
+
+     $ keybase login         # establish a session with the server, and pull down keys
+
+Once you're configured, you can:
+
+     $ keybase prove twitter # prove your twitter identity
+     $ keybase id max        # to identify a friend
+     $ keybase track max     # to track him and write a proof to the server
+
+And then attempt crypto actions like enc/dec/verify/sign.  See `keybase --help` for
+more details.
+
+"""
+    cb null
+
+  #------------
+
   run : (cb) ->
     log.debug "+ Installer::run"
     cb = chain cb, @cleanup.bind(@)
@@ -88,6 +120,7 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
     await @get_index           esc defer()
     await @key_upgrade         esc defer()
     await @software_upgrade    esc defer()
+    await @welcome_message     esc defer()
     log.debug "- Installer::run"
     cb null
 

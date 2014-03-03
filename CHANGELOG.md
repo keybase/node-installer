@@ -1,3 +1,11 @@
+## 0.1.6 (2014-03-03)
+
+Features:
+  
+  - Better administrator install message on windows
+  - Allow --prefix to specify a non-standard install location (#38)
+  - A welcome message.
+
 ## 0.1.5 (2014-02-20)
 
 Features:

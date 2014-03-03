@@ -106,6 +106,7 @@ exports.SoftwareUpgrade = class SoftwareUpgrade
     p = @package.fullpath()
     log.debug "| Full name for install: #{p}"
     log.info "Running npm install #{@package.filename()}: this may take a minute, please be patient"
+    log.warn "(Using non-standard install prefix: #{x})" if (x = @config.install_prefix())?
     args = [ "install" ,  "-g", p ]
     await npm { args }, defer err
     log.debug "- SoftwareUpgrade::install_package"

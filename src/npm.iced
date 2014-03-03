@@ -7,6 +7,7 @@ log = require './log'
 os = require 'os'
 
 ##-----------------------------------
+
 _config = null
 
 ##-----------------------------------
@@ -17,6 +18,8 @@ exports.set_config = (c) -> _config = c
 
 exports.npm = npm = ({args}, cb) ->
   name = _config.get_cmd 'npm'
+  p = _config.install_prefix()
+  args = [ "--prefix", p ].concat(args) if p?
   await run { args, name }, defer err
   cb err
 
