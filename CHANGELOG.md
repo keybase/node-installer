@@ -1,3 +1,9 @@
+## 0.1.8
+
+Bugfixes:
+ 
+  - Close #41 -- buggy doc message
+
 ## 0.1.7 (2014-03-03)
 
 Bugfixes:
