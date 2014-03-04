@@ -38,7 +38,7 @@ exports.test_install = (cb) ->
   if cmd?
     log.debug "| install check skipped since you're using a custom npm: #{cmd}"
   else
-    dirname = path.dirname process.execPath
+    dirname = _config.install_prefix() or process.env.NPM_INSTALL_PREFIX or path.dirname process.execPath
     r = prng(10).toString('hex')
     test = path.resolve(dirname, ".keybase_test_install_#{r}")
     log.debug "| Writing temporary file, to see if install will work: #{test}"
