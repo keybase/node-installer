@@ -1,3 +1,16 @@
+## 0.1.8
+
+Bugfixes:
+ 
+  - Close #41 -- buggy doc message
+
+## 0.1.7 (2014-03-03)
+
+Bugfixes:
+
+  - Fix keybase/keybase-installer#39 --- do the install check for --prefix
+    if --prefix was specified.
+
 ## 0.1.6 (2014-03-03)
 
 Features:

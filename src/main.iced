@@ -42,7 +42,7 @@ Boolean Flags:
 \t-S/--no-https      -- Don't use HTTP. This should be safe since we check PGP sigs on everything.
 
 Options:
-\t-u/--url-prefix    -- Specify a URL prefix for fetching (default: #{constants.url_prefix})
+\t-u/--url-prefix    -- Specify a URL prefix for fetching (default: #{constants.url_prefix.https})
 \t-g/--gpg           -- Use a GPG command other than `gpg`
 \t-n/--npm           -- Use an npm command other than `npm`
 \t-k/--keyring-dir   -- Where to store our GPG keys (default: ~/.keybase-installer/keyring)
