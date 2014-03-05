@@ -1,8 +1,9 @@
-## 0.1.8
+## 0.1.8 (2014-03-05)
 
 Bugfixes:
  
   - Close #41 -- buggy doc message
+  - Close #44 -- poop out on old version of node
 
 ## 0.1.7 (2014-03-03)
 
