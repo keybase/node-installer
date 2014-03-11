@@ -11,8 +11,8 @@ if [ "$NODE" = "" ] ; then
 fi
 
 if [ "$NODE" = "" ]; then
-	echo "Error: cannot start keybase; no version of node or nodejs found"
-	exit 2
+	echo "Error: cannot start $0; no version of node or nodejs found"
+	exit 4
 fi
 
-$NODE ./main.js $*
+$NODE `dirname $0`/keybase-installer.js $*

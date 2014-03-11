@@ -6,7 +6,8 @@
     "test": "make test"
   },
   "bin": {
-    "keybase-installer": "./bin/main.js"
+    "keybase-installer": "./bin/main.sh",
+    "keybase-installer.js": "./bin/keybase-installer.js"
   },
   "main": "./lib/top.js",
   "repository": {

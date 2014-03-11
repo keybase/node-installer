@@ -1,3 +1,9 @@
+## 0.1.9 
+
+Bugfixes:
+
+  - Run either nodejs or node, so support Ubuntu/Debian apt-installations
+
 ## 0.1.8 (2014-03-05)
 
 Bugfixes:
