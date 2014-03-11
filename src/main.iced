@@ -65,6 +65,12 @@ Options:
 \t-x/--proxy <url>
 \t\tProxy all downloads through the given proxy
 
+Environment Variables:
+
+\thttp_proxy=<full-url> OR https_proxy=<full-url>
+\t\tAs --proxy above, proxy all requests through the
+\t\tgiven proxy.
+
 Version: #{version()}
 
 """
