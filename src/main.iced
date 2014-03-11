@@ -29,9 +29,9 @@ class HelpCommand extends BaseCommand
   run : (cb) ->
     console.log """usage: #{bin()} [-dhjvCS] [-p <install-prefix>] [<keybase-version>]
 
-\tUpgrade or install a version of keybase.  Check signatures with Keybase.io's signing
-\tkey. You can provide a specific version or by default you'll get the most recent
-\tversion.
+\tUpgrade or install a version of keybase.  Check signatures with 
+\tKeybase.io's signing key. You can provide a specific version 
+\tor by default you'll get the most recent version.
 
 Boolean Flags:
 
@@ -48,16 +48,19 @@ Options:
 \t\tUse a GPG command other than `gpg`
 
 \t-k/--keyring-dir <dir>
-\t\tWhere to store our GPG keys (default: ~/.keybase-installer/keyring)
+\t\tWhere to store our GPG keys.
+\t\t(default: ~/.keybase-installer/keyring)
 
 \t-n/--npm <cmd>
 \t\tUse an npm command other than `npm`
 
 \t-p/--prefix <dir>
-\t\tInstall to the given prefix (rather than where `npm` installs by default)
+\t\tInstall to the given prefix
+\t\t(rather than where `npm` installs by default)
 
 \t-u/--url-prefix <prfx>
-\t\tSpecify a URL prefix for fetching (default: #{constants.url_prefix.https})
+\t\tSpecify a URL prefix for fetching
+\t\t(default: #{constants.url_prefix.https})
 
 \t-x/--proxy <url>
 \t\tProxy all downloads through the given proxy
