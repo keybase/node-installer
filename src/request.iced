@@ -4,6 +4,7 @@ http = require 'http'
 {parse} = require 'url'
 ProgressBar = require 'progress'
 urlmod = require 'url'
+request = require 'request'
 
 #========================================================================
 
@@ -83,7 +84,7 @@ format_url = (u) -> if (typeof u is 'string') then u else urlmod.format(u)
 
 #-----------
 
-module.exports = request = (opts, cb) ->
+request_progress = (opts, cb) ->
   lim = opts.maxRedirects or 10
   res = body = null
   found = false
@@ -113,6 +114,30 @@ module.exports = request = (opts, cb) ->
   else new Error "In #{format_url opts.url}: HTTP failure, code #{res.statusCode}"
 
   cb err, res, body
+
+#============================================================================
+
+request_mikeal = (opts, cb) ->
+  opts.encoding = null
+  rv = new iced.Rendezvous()
+  url = opts.url or opts.uri
+  url_s = if typeof(url) is 'object' then url.format() else url
+  request opts, rv.id(true).defer(err, res, body)
+
+  process.stderr.write("Downloading...")
+  loop
+    setTimeout rv.id(false).defer(), 100
+    await rv.wait defer which 
+    if which then break
+    process.stderr.write(".")
+  process.stderr.write("..done\n") 
+  cb err, res, body
+
+#============================================================================
+
+exports.request = (opts, cb) ->
+  if opts.proxy? then request_mikeal opts, cb
+  else request_progress opts, cb
 
 #============================================================================
 

@@ -1,6 +1,6 @@
 {constants} = require './constants'
 {fullname} = require './package'
-request = require './request'
+{request} = require './request'
 log = require './log'
 {tmpdir} = require 'os'
 fs = require 'fs'
@@ -127,6 +127,7 @@ exports.Config = class Config
       headers : { "X-Keybase-Installer" : fullname() },
       maxRedirects : 10
       progress : 50000
+      proxy : @argv.get("x", "proxy")
     log.info "Fetching URL #{url}"
     await request opts, defer err, res, body
     log.debug " * fetched -> #{res?.statusCode}"
