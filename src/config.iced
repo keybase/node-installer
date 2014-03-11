@@ -120,6 +120,11 @@ exports.Config = class Config
 
   #--------------------
 
+  get_proxy : () ->
+    @argv.get("x", "proxy") or process.env.https_proxy or process.env.http_proxy
+
+  #--------------------
+
   request : (u, cb) ->
     url = if u.match("^https?://") then u else @make_url(u)
     opts = 
@@ -127,7 +132,7 @@ exports.Config = class Config
       headers : { "X-Keybase-Installer" : fullname() },
       maxRedirects : 10
       progress : 50000
-      proxy : @argv.get("x", "proxy")
+      proxy : @get_proxy()
     log.info "Fetching URL #{url}"
     await request opts, defer err, res, body
     log.debug " * fetched -> #{res?.statusCode}"
