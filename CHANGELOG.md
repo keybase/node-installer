@@ -1,3 +1,7 @@
+## 0.1.10 (2014-03-10)
+
+  - Enable the https_proxy and http_proxy environment variables
+
 ## 0.1.9 (2014-03-10)
 
 Features:
