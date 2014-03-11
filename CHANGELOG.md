@@ -1,3 +1,17 @@
+## 0.1.10 (2014-03-10)
+
+  - Enable the https_proxy and http_proxy environment variables
+
+## 0.1.9 (2014-03-10)
+
+Features:
+
+  - Enable -x/--proxy flag for proxying the install through the given proxy
+
+Cleanups:
+
+  - Cleanup usage message
+
 ## 0.1.8 (2014-03-05)
 
 Bugfixes:

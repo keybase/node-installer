@@ -27,26 +27,49 @@ class HelpCommand extends BaseCommand
     super argv 
 
   run : (cb) ->
-    console.log """usage: #{bin()} [-vh?] [-C] [-u <url-prefix>] [<keybase-version>]
+    console.log """usage: #{bin()} [-dhjvCS] [-p <install-prefix>] [<keybase-version>]
 
-\tUpgrade or install a version of keybase.  Check signatures for Keybase.io's signing
-\tkey. You can provide a specific version or by default you'll get the most recent
-\tversion.
+\tUpgrade or install a version of keybase.  Check signatures with 
+\tKeybase.io's signing key. You can provide a specific version 
+\tor by default you'll get the most recent version.
 
 Boolean Flags:
-\t-d/--debug         -- Turn on debugging output
-\t-v/--version       -- Print the version and quit
-\t-h/--help          -- Print the help message and quit
-\t-C/--skip-cleanup  -- Don't delete temporary files after install
-\t-j/--key-json      -- Output the hash of the JSON file corresponding to the built-in keyset
-\t-S/--no-https      -- Don't use HTTP. This should be safe since we check PGP sigs on everything.
+
+\t-d/--debug              -- Turn on debugging output
+\t-h/--help               -- Print the help message and quit
+\t-j/--key-json           -- Output the hash of the JSON file of the built-in keyset
+\t-v/--version            -- Print the version and quit
+\t-C/--skip-cleanup       -- Don't delete temporary files after install
+\t-S/--no-https           -- Don't use HTTP. Safe since we check PGP sigs on everything.
 
 Options:
-\t-u/--url-prefix    -- Specify a URL prefix for fetching (default: #{constants.url_prefix.https})
-\t-g/--gpg           -- Use a GPG command other than `gpg`
-\t-n/--npm           -- Use an npm command other than `npm`
-\t-k/--keyring-dir   -- Where to store our GPG keys (default: ~/.keybase-installer/keyring)
-\t-p/--prefix        -- Install to the given prefix (rather than where `npm` installs by default)
+
+\t-g/--gpg <cmd>
+\t\tUse a GPG command other than `gpg`
+
+\t-k/--keyring-dir <dir>
+\t\tWhere to store our GPG keys.
+\t\t(default: ~/.keybase-installer/keyring)
+
+\t-n/--npm <cmd>
+\t\tUse an npm command other than `npm`
+
+\t-p/--prefix <dir>
+\t\tInstall to the given prefix
+\t\t(rather than where `npm` installs by default)
+
+\t-u/--url-prefix <prfx>
+\t\tSpecify a URL prefix for fetching
+\t\t(default: #{constants.url_prefix.https})
+
+\t-x/--proxy <url>
+\t\tProxy all downloads through the given proxy
+
+Environment Variables:
+
+\thttp_proxy=<full-url> OR https_proxy=<full-url>
+\t\tAs --proxy above, proxy all requests through the
+\t\tgiven proxy.
 
 Version: #{version()}
 
