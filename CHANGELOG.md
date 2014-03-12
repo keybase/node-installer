@@ -1,4 +1,12 @@
+## 0.1.11
+
+Features:
+
+  - Better checking for `nodejs` rather than `node` and earlier versions.
+
 ## 0.1.10 (2014-03-10)
+
+Features:
 
   - Enable the https_proxy and http_proxy environment variables
 
