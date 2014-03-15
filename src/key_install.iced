@@ -21,7 +21,7 @@ exports.KeyInstall = class KeyInstall
 
   make_tmp_keyring : (cb) ->
     log.debug "| KeyInstaller::make_tmp_keyring"
-    await keyring.TmpKeyRing.make defer err, @_tmp_keyring
+    await keyring.QuarantinedKeyRing.make defer err, @_tmp_keyring
     cb err
 
   #-----------------
@@ -44,6 +44,7 @@ exports.KeyInstall = class KeyInstall
       fingerprint  : source.fingerprint,
       username : "code@keybase.io"
     }
+    @_tmp_keyring.set_fingerprint source.fingerprint
 
     await k.save esc defer err
     await @_tmp_keyring.list_fingerprints esc defer fps
