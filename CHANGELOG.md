@@ -1,3 +1,11 @@
+## 0.1.12
+
+Bugfixes:
+
+  - Back out the previous change.
+  - Upgrade gpg-wrapper to v0.0.40; this fixes indexing for people who have
+    the `with-fingerprint` gpg.conf option on.
+
 ## 0.1.11 (2014-03-14)
 
 Bugfixes:
