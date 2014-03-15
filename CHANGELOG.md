@@ -1,4 +1,14 @@
+## 0.1.11 (2014-03-14)
+
+Bugfixes:
+
+  - Close keybase/keybase-issues#190 --- some versions of GPG print the fingerprint
+    of the subkey too, so we should be ok with getting >1 (let's just call it <=2) 
+    fingerprint on `gpg -k --fingerprint`.
+
 ## 0.1.10 (2014-03-10)
+
+Features:
 
   - Enable the https_proxy and http_proxy environment variables
 

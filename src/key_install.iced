@@ -49,7 +49,7 @@ exports.KeyInstall = class KeyInstall
     await @_tmp_keyring.list_fingerprints esc defer fps
 
     msg = if fps.length is 0 then "key save failed; no fingerprints"
-    else if fps.length > 1 then "keyring corruption; too many fingerprints found"
+    else if fps.length > 2 then "keyring corruption; too many fingerprints found"
     else if not fpeq((a = fps[0]), (b = @_keyset.keys.code.fingerprint))
       "fingerprint mismatch after import: #{a} != #{b}"
 
