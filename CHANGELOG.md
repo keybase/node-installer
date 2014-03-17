@@ -2,7 +2,7 @@
 
 Features:
   
-  - People who fail otherwise can turn on the "nuclear options" which is to 
+  - People who fail otherwise can turn on the "nuclear option" which is to 
     ignore their GPG options when doing tmp keyring operations.  Try --no-gpg-options.
   - Upgrade to gpg-wrapper v0.0.41 with the above.
 
