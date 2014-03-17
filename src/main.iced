@@ -41,6 +41,7 @@ Boolean Flags:
 \t-v/--version            -- Print the version and quit
 \t-C/--skip-cleanup       -- Don't delete temporary files after install
 \t-S/--no-https           -- Don't use HTTP. Safe since we check PGP sigs on everything.
+\t-O/--no-gpg-options     -- Turn off GPG options file for temporary keyring operations
 
 Options:
 
@@ -107,6 +108,7 @@ class Main
       "C"
       "?"
       "S"
+      "O"
       "debug"
       "key-json"
       "hash"
@@ -114,6 +116,7 @@ class Main
       "version"
       "skip-cleanup"
       "no-https"
+      "no-gpg-options"
     ]
     @argv = getopt process.argv[2...], { flags }
     if @argv.get("v", "version")

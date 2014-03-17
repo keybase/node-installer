@@ -1,4 +1,12 @@
-## 0.1.12
+## 0.1.13 (2014-03-17)
+
+Features:
+  
+  - People who fail otherwise can turn on the "nuclear options" which is to 
+    ignore their GPG options when doing tmp keyring operations.  Try --no-gpg-options.
+  - Upgrade to gpg-wrapper v0.0.41 with the above.
+
+## 0.1.12 (2014-03-16)
 
 Bugfixes:
 
@@ -11,7 +19,7 @@ Bugfixes:
 Bugfixes:
 
   - Close keybase/keybase-issues#190 --- some versions of GPG print the fingerprint
-    of the subkey too, so we should be ok with getting >1 (let's just call it <=2) 
+    of the subkey too, so we should be ok with getting >1 (let us just call it <=2) 
     fingerprint on `gpg -k --fingerprint`.
 
 ## 0.1.10 (2014-03-10)

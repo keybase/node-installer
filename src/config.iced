@@ -52,6 +52,7 @@ exports.Config = class Config
     keyring.init {
       log : log,
       get_tmp_keyring_dir : () => @get_tmpdir()
+      get_no_options : () => @get_no_gpg_options()
     }
     dir = @get_keyring_dir()
     esc = make_esc cb, "Config::init_keyring"
@@ -90,6 +91,7 @@ exports.Config = class Config
   #--------------------
 
   get_tmpdir : () -> @_tmpdir
+  get_no_gpg_options : () -> @argv.get("O", "no-gpg-options")
 
   #--------------------
 
