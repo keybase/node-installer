@@ -1,3 +1,9 @@
+## 0.1.14 (2014-03-19)
+
+Bugfixes:
+
+  - Documentation nit; can use --prefix on failed install, not just sudo.
+
 ## 0.1.13 (2014-03-17)
 
 Features:
