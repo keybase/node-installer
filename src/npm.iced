@@ -51,7 +51,7 @@ exports.test_install = (cb) ->
             "\nand selecting \"Run as Administrator\"," +
             "\nthen run `keybase-installer`. (Then you may close the window.)\n"
         else
-          err = new Error "Permission denied installing to #{dirname}: try running `sudo keybase-installer`"
+          err = new Error "Permission denied installing to #{dirname}: try running `sudo keybase-installer` or use the `--prefix` option to install locally"
       else
         err = new Error "Can't write to directory #{dirname}: #{err.code}"
     else
