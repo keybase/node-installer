@@ -1,3 +1,9 @@
+## 0.1.15 (2014-03-19)
+
+Bugfixes:
+
+  - Upgrade gpg-wrapper in build; previous build was stale
+
 ## 0.1.14 (2014-03-19)
 
 Bugfixes:
