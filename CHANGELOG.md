@@ -1,3 +1,10 @@
+## 0.1.16 (2014-03-20)
+
+Bugfixes:
+
+  - Close keybase/keybase-issuses#294: Upgrade to gpg-wrapper@v0.0.42, which
+    creates an empty trustdb.
+
 ## 0.1.15 (2014-03-19)
 
 Bugfixes:

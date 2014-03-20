@@ -27,10 +27,12 @@ exports.KeyInstall = class KeyInstall
   #-----------------
 
   cleanup : (cb) ->
+    log.debug "+ Cleaning up tmp keyring #{@_tmp_keyring}"
     if @_tmp_keyring?
       await @_tmp_keyring.nuke defer err
       if err?
         log.warn "Error cleaning up temporary keyring: #{err.message}"
+    log.debug "- Cleaning up tmp keyring #{@_tmp_keyring}"
     cb()
 
   #-----------------

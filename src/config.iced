@@ -108,6 +108,7 @@ exports.Config = class Config
 
   cleanup : (cb) ->
     esc = make_esc cb, "Installer::cleanup"
+    log.debug "+ cleanup #{@_tmpdir}"
     if not @_tmpdir? then # noop
     else if @argv.get("C","skip-cleanup")
       log.info "Preserving tmpdir #{@_tmpdir} as per command-line switch"
@@ -116,8 +117,10 @@ exports.Config = class Config
       await fs.readdir @_tmpdir, esc defer files
       for f in files
         p = path.join @_tmpdir, f
+        log.debug "| Unlink #{p}"
         await fs.unlink p, esc defer()
       await fs.rmdir @_tmpdir, esc defer()
+    log.debug "- cleanup #{@_tmpdir} -> OK"
     cb null
 
   #--------------------
