@@ -27,7 +27,8 @@
     "iced-utils": "~0.1.9",
     "pgp-utils": ">=0.0.8",
     "progress": "~1.1.3",
-    "request": "~2.34.0"
+    "request": "~2.34.0",
+    "semver": "^2.2.1"
   },
   "bundleDependencies": [
     "gpg-wrapper",
