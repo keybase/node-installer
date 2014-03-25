@@ -19,7 +19,7 @@ exports.set_config = (c) -> _config = c
 exports.npm = npm = ({args}, cb) ->
   name = _config.get_cmd 'npm'
   p = _config.install_prefix()
-  args = [ "--prefix", p ].concat(args) if p?
+  args = [ "--prefix", p ].concat(args) if p? and p.length
   await run { args, name }, defer err
   cb err
 
