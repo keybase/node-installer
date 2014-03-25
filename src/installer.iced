@@ -1,7 +1,7 @@
 
 {BaseCommand} = require './base'
 {keyring,GPG} = require 'gpg-wrapper'
-{make_esc} = require 'iced-error'
+{chain,make_esc} = require 'iced-error'
 request = require './request'
 {fullname} = require './package'
 {constants} = require './constants'
@@ -11,7 +11,7 @@ request = require './request'
 {SoftwareUpgrade} = require './software_upgrade'
 log = require './log'
 npm = require './npm'
-{chain} = require('iced-utils').util
+{mkdir_p} = require('iced-utils').fs
 path = require 'path'
 
 ##========================================================================
@@ -29,6 +29,16 @@ exports.Installer = class Installer extends BaseCommand
     if not err? and @package?
       log.info "Succesful install: #{@package.filename()}"
     cb()
+
+  #------------
+
+  make_install_dir : (cb) ->
+    err = null
+    if (p = @config.install_prefix())? and p.length
+      await mkdir_p p, 0o755, defer err, made
+      if not err? and made
+        log.warn "Created install directory: #{p}"
+    cb err
 
   #------------
 
@@ -111,6 +121,7 @@ more details.
     esc = make_esc cb, "Installer::run"
     @config.set_alt_cmds()
     npm.set_config @config
+    await @make_install_dir    esc defer()
     await @test_gpg            esc defer()
     await @test_npm            esc defer()
     await @test_npm_install    esc defer()

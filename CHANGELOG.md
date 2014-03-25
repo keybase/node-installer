@@ -1,3 +1,9 @@
+## 0.1.17 (2014-03-25)
+
+Bugfixes:
+
+  - Address keybase/keybase-issues#349: Fix bug with `--prefix` and npm v1.2.x
+
 ## 0.1.16 (2014-03-20)
 
 Bugfixes:
