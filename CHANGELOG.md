@@ -3,6 +3,7 @@
 Bugfixes:
 
   - Address keybase/keybase-issues#349: Fix bug with `--prefix` and npm v1.2.x
+  - Check version of node.js after install, to solve some ugly crashes
 
 ## 0.1.16 (2014-03-20)
 
