@@ -105,7 +105,7 @@ Once you're configured, you can:
 
      $ keybase prove twitter # prove your twitter identity
      $ keybase id max        # to identify a friend
-     $ keybase track max     # to track him and write a proof to the server
+     $ keybase track max     # to track them and write a proof to the server
 
 And then attempt crypto actions like enc/dec/verify/sign.  See `keybase --help` for
 more details.
