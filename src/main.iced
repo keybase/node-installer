@@ -72,6 +72,9 @@ Environment Variables:
 \t\tAs --proxy above, proxy all requests through the
 \t\tgiven proxy.
 
+\tPREFIX
+\t\tAn install prefix
+
 Version: #{version()}
 
 """

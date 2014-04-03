@@ -1,3 +1,9 @@
+## 0.1.18 (2014-04-03)
+
+Bugfixes:
+
+  - Add a PREFIX environment variable for installation.
+
 ## 0.1.17 (2014-03-25)
 
 Bugfixes:

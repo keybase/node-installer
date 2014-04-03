@@ -82,7 +82,7 @@ exports.Config = class Config
 
   #--------------------
 
-  install_prefix : () -> @argv.get("p", "prefix")
+  install_prefix : () -> process.env.PREFIX or @argv.get("p", "prefix") 
 
   #--------------------
 
