@@ -4,6 +4,7 @@ path = require 'path'
 fs = require 'fs'
 log = require './log'
 {prng} = require 'crypto'
+{strip} = require './util'
 os = require 'os'
 
 ##-----------------------------------
@@ -20,8 +21,8 @@ exports.npm = npm = ({args}, cb) ->
   name = _config.get_cmd 'npm'
   p = _config.install_prefix()
   args = [ "--prefix", p ].concat(args) if p? and p.length
-  await run { args, name }, defer err
-  cb err
+  await run { args, name }, defer err, out
+  cb err, out
 
 ##-----------------------------------
 
@@ -33,12 +34,13 @@ exports.check = check_cmd = (cb) ->
 
 exports.test_install = (cb) ->
   log.debug "+ Installer::test_npm_install"
-  cmd = _config.get_alt_cmd('npm')
-  err = null
-  if cmd?
-    log.debug "| install check skipped since you're using a custom npm: #{cmd}"
+
+  await @npm { args : [ "get", "prefix" ] }, defer err, out
+  if err?
+    log.error "Failed to get a prefix from npm"
   else
-    dirname = _config.install_prefix() or process.env.NPM_INSTALL_PREFIX or path.dirname process.execPath
+    dirname = strip out.toString('utf8')
+    log.debug "| Testing install directory: #{dirname}"
     r = prng(10).toString('hex')
     test = path.resolve(dirname, ".keybase_test_install_#{r}")
     log.debug "| Writing temporary file, to see if install will work: #{test}"
