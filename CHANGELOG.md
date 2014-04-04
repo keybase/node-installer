@@ -1,12 +1,13 @@
-## 0.1.19 (2014-04-04)
+## 0.1.20 (2014-04-04)
 
 Bugfixes:
 
   - Simplify and make more accurate the check to see where to install.  Use `npm get prefix`.
     This is a lot more accurate and won't give false failures that prompt to install as root.
   - Retire NPM_INSTALL_PREFIX, and just use PREFIX instead.
+  - Remove the engine requirement in pacakge.json so that users get a nicer error message.
 
-## 0.1.18 (2014-04-03)
+## 0.1.19 (2014-04-03)
 
 Bugfixes:
 
