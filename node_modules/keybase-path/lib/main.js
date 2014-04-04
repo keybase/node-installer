@@ -83,7 +83,7 @@
         opts = {};
       }
       ret = null;
-      err = (e = process.env.TEMP) == null ? new Error("No env.TEMP variable found") : (p = this.split(e)).length === 0 ? new Error("Malformed env.TEMP variable") : !(p.pop().match(/^te?mp$/i)) ? new Error("TEMP didn't end in \\Temp") : (lst(p).toLowerCase() === "local" && !opts.local ? (p.pop(), p.push("Roaming")) : void 0, ret = opts.array ? p : this.join.apply(this, p));
+      err = (e = process.env.TEMP) == null ? new Error("No env.TEMP variable found") : (p = this.split(e)).length === 0 ? new Error("Malformed env.TEMP variable") : !(p.pop().match(/^te?mp$/i)) ? new Error("TEMP didn't end in \\Temp") : (lst(p).toLowerCase() === "local" && !opts.local ? (p.pop(), p.push("Roaming")) : void 0, ret = opts.array ? p : this.join.apply(this, p), null);
       if (err != null) {
         throw err;
       }

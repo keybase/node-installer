@@ -40,6 +40,7 @@ class Insane extends Base
 				p.pop()
 				p.push "Roaming"
 			ret = if opts.array then p else @join(p...)
+			null
 		if err? then throw err
 		return ret
 
