@@ -26,7 +26,6 @@ url_join = (args...) ->
 
 home = (opts) -> 
   x = kpath.home opts
-  console.log x
   return x
 
 #==========================================================
@@ -46,8 +45,7 @@ exports.Config = class Config
     unless @_keyring_dir?
       unless ((d = @argv.get("k", "keyring-dir"))?)
         v = (home { array : true }).concat [ ".keybase-installer", "keyring" ]
-        console.log v
-        d = kpath.join v...
+        d = kpath.unsplit v
       @_keyring_dir = d
     return @_keyring_dir
 
@@ -105,7 +103,7 @@ exports.Config = class Config
     unless @_tmpdir?
       r = base64u.encode(prng(16))
       p = kpath.split(tmpdir()).concat [ "keybase_install_#{r}" ]
-      @_tmpdir = kpath.join p...
+      @_tmpdir = kpath.unsplit p
       await fs.mkdir @_tmpdir, 0o700, defer err
       log.info "Made temporary directory: #{@_tmpdir}"
     cb err
