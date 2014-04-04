@@ -12,6 +12,7 @@ iutils = require 'iced-utils'
 path = require 'path'
 {set_gpg_cmd,keyring} = require 'gpg-wrapper'
 {AltKeyRing} = keyring
+kpath = require 'keybase-path'
 
 ##==============================================================
 
@@ -23,8 +24,10 @@ url_join = (args...) ->
 
 #==========================================================
 
-home = () ->
-  process.env.HOME or process.env.USERPROFILE
+home = (opts) -> 
+  x = kpath.home opts
+  console.log x
+  return x
 
 #==========================================================
 
@@ -42,7 +45,9 @@ exports.Config = class Config
   get_keyring_dir : () ->
     unless @_keyring_dir?
       unless ((d = @argv.get("k", "keyring-dir"))?)
-        d = path.join(home(), ".keybase-installer", "keyring")
+        v = (home { array : true }).concat [ ".keybase-installer", "keyring" ]
+        console.log v
+        d = kpath.join v...
       @_keyring_dir = d
     return @_keyring_dir
 
@@ -99,7 +104,8 @@ exports.Config = class Config
     err = null
     unless @_tmpdir?
       r = base64u.encode(prng(16))
-      @_tmpdir = path.join(tmpdir(), "keybase_install_#{r}");
+      p = kpath.split(tmpdir()).concat [ "keybase_install_#{r}" ]
+      @_tmpdir = kpath.join p...
       await fs.mkdir @_tmpdir, 0o700, defer err
       log.info "Made temporary directory: #{@_tmpdir}"
     cb err
@@ -116,7 +122,7 @@ exports.Config = class Config
       log.info "cleaning up tmpdir #{@_tmpdir}"
       await fs.readdir @_tmpdir, esc defer files
       for f in files
-        p = path.join @_tmpdir, f
+        p = kpath.join @_tmpdir, f
         log.debug "| Unlink #{p}"
         await fs.unlink p, esc defer()
       await fs.rmdir @_tmpdir, esc defer()

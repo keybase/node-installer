@@ -1,3 +1,9 @@
+## 0.1.21
+
+Bugfixes:
+
+  - Support windows homedirs with spaces
+
 ## 0.1.20 (2014-04-04)
 
 Bugfixes:
