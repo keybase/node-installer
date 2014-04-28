@@ -1,3 +1,9 @@
+## 0.1.22
+
+Features:
+
+  - Mention where keybase was installed in install message 
+
 ## 0.1.21 (2014-04-04)
 
 Bugfixes:

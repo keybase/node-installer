@@ -15,6 +15,7 @@
   },
   "engineStrict": true,
   "dependencies": {
+    "colors" : "0.6.2",
     "gpg-wrapper": "0.0.42",
     "iced-coffee-script": "~1.7.1-a",
     "iced-data-structures": "~0.0.5",
@@ -29,6 +30,7 @@
     "semver": ">=1"
   },
   "bundleDependencies": [
+    "colors",
     "gpg-wrapper",
     "keybase-path",
     "iced-coffee-script",

@@ -13,6 +13,7 @@ log = require './log'
 npm = require './npm'
 {mkdir_p} = require('iced-utils').fs
 path = require 'path'
+colors = require 'colors'
 
 ##========================================================================
 
@@ -79,18 +80,27 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
 
   #------------
 
-  test_npm_install : (cb) -> npm.test_install cb
+  test_npm_install : (cb) -> 
+    await npm.test_install defer err, @_install_prefix
+    cb err
 
   #------------
 
   welcome_message : (cb) ->
+    dir = path.join @_install_prefix, "bin"
+    cmd = path.join dir, "keybase"
     console.log """
 =====================================================================
 
 Welcome to keybase.io!
 
-You have now successfully installed the command-line client.  If you're new to the 
-service run:
+You have successfully installed the command-line client to
+   
+====>    #{colors.bold cmd}    <=======
+
+Please make sure #{colors.bold dir} is in your PATH.
+
+If you're new to the service run:
 
      $ keybase signup        # signup for a new account
      $ keybase push          # to push your public key to the server

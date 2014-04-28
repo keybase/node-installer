@@ -34,6 +34,7 @@ exports.check = check_cmd = (cb) ->
 
 exports.test_install = (cb) ->
   log.debug "+ Installer::test_npm_install"
+  dirname = null
 
   await @npm { args : [ "get", "prefix" ] }, defer err, out
   if err?
@@ -63,6 +64,6 @@ exports.test_install = (cb) ->
       else
         log.debug "| Unlinking file: #{test}"
   log.debug "- Installer::test_npm_install"
-  cb err
+  cb err, dirname
 
 ##-----------------------------------
