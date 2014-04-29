@@ -1,6 +1,6 @@
 {
   "name": "keybase-installer",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": "Trusted installer/updater for keybase",
   "scripts": {
     "test": "make test"
@@ -15,7 +15,7 @@
   },
   "engineStrict": true,
   "dependencies": {
-    "colors" : "0.6.2",
+    "colors": "0.6.2",
     "gpg-wrapper": "0.0.42",
     "iced-coffee-script": "~1.7.1-a",
     "iced-data-structures": "~0.0.5",
