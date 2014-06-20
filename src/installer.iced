@@ -135,6 +135,7 @@ more details.
     await @test_gpg            esc defer()
     await @test_npm            esc defer()
     await @test_npm_install    esc defer()
+    @config.set_actual_prefix @_install_prefix
     await @config.make_tmpdir  esc defer()
     await @config.init_keyring esc defer()
     await @key_setup           esc defer()

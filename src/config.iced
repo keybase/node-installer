@@ -38,7 +38,12 @@ exports.Config = class Config
     @_tmpdir = null
     @_alt_cmds = {}
     @_keyring_dir = null
+    @_actual_prefix = null
     
+  #--------------------
+
+  set_actual_prefix : (p) -> @_actual_prefix = p
+
   #--------------------
 
   get_keyring_dir : () ->

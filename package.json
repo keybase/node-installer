@@ -17,10 +17,10 @@
   "dependencies": {
     "colors": "0.6.2",
     "gpg-wrapper": "0.0.42",
-    "iced-coffee-script": "~1.7.1-a",
     "iced-data-structures": "~0.0.5",
     "iced-error": "~0.0.8",
     "iced-logger": "~0.0.1",
+    "iced-runtime": "^1.0.0",
     "iced-spawn": ">=0.0.3",
     "iced-utils": "~0.1.9",
     "keybase-path": "0.0.9",
@@ -29,11 +29,14 @@
     "request": "2.34.0",
     "semver": ">=1"
   },
+  "devDependencies": {
+    "iced-coffee-script": "~1.7.1-f"
+  },
   "bundleDependencies": [
     "colors",
     "gpg-wrapper",
     "keybase-path",
-    "iced-coffee-script",
+    "iced-runtime",
     "iced-data-structures",
     "iced-error",
     "iced-logger",
