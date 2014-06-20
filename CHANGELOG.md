@@ -1,4 +1,10 @@
-## 0.1.22
+## 1.0.0
+
+Features:
+
+  - New ICS/ICS-runtime split
+
+## 0.1.22 (2014-04-29)
 
 Features:
 
