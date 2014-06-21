@@ -3,7 +3,7 @@
 Features:
 
   - New ICS/ICS-runtime split
-  - Fix bad link to documentation (see issue #72)
+  - Fix bad link to documentation (see issue #58)
 
 ## 0.1.22 (2014-04-29)
 
