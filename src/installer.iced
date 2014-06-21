@@ -58,7 +58,7 @@ The GPG command you specified `#{c}` wasn't found; see this page for help instal
 The command `gpg` wasn't found; you need to install it. See this page for more info:
 """
       lines.push """
-\t   https://keybase.io/__/command_line/keybase#prerequisites
+\t   https://keybase.io/docs/command_line/prerequisites
 """
       err = new Error lines.join("\n")
     log.debug "- Installer::test_gpg -> #{if err? then 'FAILED' else 'OK'}"
