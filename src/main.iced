@@ -40,7 +40,7 @@ Boolean Flags:
 \t-j/--key-json           -- Output the hash of the JSON file of the built-in keyset
 \t-v/--version            -- Print the version and quit
 \t-C/--skip-cleanup       -- Don't delete temporary files after install
-\t-S/--no-https           -- Don't use HTTP. Safe since we check PGP sigs on everything.
+\t-S/--no-https           -- Don't use HTTPS. Safe since we check PGP sigs on everything.
 \t-O/--no-gpg-options     -- Turn off GPG options file for temporary keyring operations
 
 Options:
