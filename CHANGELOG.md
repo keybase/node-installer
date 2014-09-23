@@ -1,4 +1,4 @@
-## 1.1.0
+## 1.0.0
 
 Features:
 
@@ -9,11 +9,6 @@ Features:
   - Upgrade to iced-utils@v0.1.22 to support args of the form `--gpg=/usr/local/bin/gpg`
      - Before you'd have to say `--gpg /usr/local/bin/gpg`, but the actual client
        was more lenient
-
-## 1.0.0
-
-Features:
-
   - New ICS/ICS-runtime split
   - Fix bad link to documentation (see issue #58)
 
