@@ -24,13 +24,13 @@ class VersionCommand extends BaseCommand
 class HelpCommand extends BaseCommand
 
   constructor : (argv, @err = null) ->
-    super argv 
+    super argv
 
   run : (cb) ->
     console.log """usage: #{bin()} [-dhjvCS] [-p <install-prefix>] [<keybase-version>]
 
-\tUpgrade or install a version of keybase.  Check signatures with 
-\tKeybase.io's signing key. You can provide a specific version 
+\tUpgrade or install a version of keybase.  Check signatures with
+\tKeybase.io's signing key. You can provide a specific version
 \tor by default you'll get the most recent version.
 
 Boolean Flags:

@@ -1,3 +1,9 @@
+## 1.0.1 (2014-06-24)
+
+Bugfix:
+
+  - Fix crasher in reporting an overrused deferral
+
 ## 1.0.0 (2014-06-16)
 
 Features:

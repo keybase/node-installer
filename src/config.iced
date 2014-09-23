@@ -24,7 +24,7 @@ url_join = (args...) ->
 
 #==========================================================
 
-home = (opts) -> 
+home = (opts) ->
   x = kpath.home opts
   return x
 
@@ -39,7 +39,7 @@ exports.Config = class Config
     @_alt_cmds = {}
     @_keyring_dir = null
     @_actual_prefix = null
-    
+
   #--------------------
 
   set_actual_prefix : (p) -> @_actual_prefix = p
@@ -75,22 +75,22 @@ exports.Config = class Config
 
   #--------------------
 
-  set_master_ring : (r, cb) -> 
+  set_master_ring : (r, cb) ->
     @_master_ring = r
     await @_master_ring.index defer err, @_keyring_index
     cb err
 
   #--------------------
 
-  url_prefix : () -> 
+  url_prefix : () ->
     if (u = @argv.get("u", "url-prefix")) then u
-    else 
-      prot = if (@argv.get("S","no-https")) then 'http' else 'https' 
+    else
+      prot = if (@argv.get("S","no-https")) then 'http' else 'https'
       constants.url_prefix[prot]
 
   #--------------------
 
-  install_prefix : () -> process.env.PREFIX or @argv.get("p", "prefix") 
+  install_prefix : () -> process.env.PREFIX or @argv.get("p", "prefix")
 
   #--------------------
 
@@ -121,7 +121,7 @@ exports.Config = class Config
     if not @_tmpdir? then # noop
     else if @argv.get("C","skip-cleanup")
       log.info "Preserving tmpdir #{@_tmpdir} as per command-line switch"
-    else 
+    else
       log.info "cleaning up tmpdir #{@_tmpdir}"
       await fs.readdir @_tmpdir, esc defer files
       for f in files
@@ -141,7 +141,7 @@ exports.Config = class Config
 
   request : (u, cb) ->
     url = if u.match("^https?://") then u else @make_url(u)
-    opts = 
+    opts =
       url : url
       headers : { "X-Keybase-Installer" : fullname() },
       maxRedirects : 10
@@ -162,9 +162,20 @@ exports.Config = class Config
   #--------------------
 
   set_alt_cmds : () ->
+    @set_alt_gpg()
+    @set_alt_npm()
+
+  #--------------------
+
+  set_alt_gpg : () ->
     if (c = @argv.get("g","gpg"))?
       @_alt_cmds.gpg = c
-      set_gpg_cmd c
+    else
+      null
+
+  #--------------------
+
+  set_alt_npm : () ->
     if (n = @argv.get("n", "npm"))?
       @_alt_cmds.npm = n
 
@@ -185,7 +196,7 @@ exports.Config = class Config
   #--------------------
 
   index_lookup_hash : (v) -> @_index.package?.all?[v]
-  
+
   #--------------------
 
   oneshot_verify : ({which, sig, file}, cb) ->

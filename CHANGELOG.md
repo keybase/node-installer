@@ -1,3 +1,15 @@
+## 1.1.0
+
+Features:
+
+  - Use gpg2 rather than gpg by default
+     - See keybase/keybase-issues#1002
+  - Check for bad versions of node
+     - See keybase/keybase-issues#968
+  - Upgrade to iced-utils@v0.1.22 to support args of the form `--gpg=/usr/local/bin/gpg`
+     - Before you'd have to say `--gpg /usr/local/bin/gpg`, but the actual client
+       was more lenient
+
 ## 1.0.0
 
 Features:

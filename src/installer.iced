@@ -1,6 +1,6 @@
 
 {BaseCommand} = require './base'
-{keyring,GPG} = require 'gpg-wrapper'
+{find_and_set_cmd,keyring,GPG} = require 'gpg-wrapper'
 {chain,make_esc} = require 'iced-error'
 request = require './request'
 {fullname} = require './package'
@@ -14,6 +14,7 @@ npm = require './npm'
 {mkdir_p} = require('iced-utils').fs
 path = require 'path'
 colors = require 'colors'
+{check_node_async} = require 'badnode'
 
 ##========================================================================
 
@@ -44,23 +45,25 @@ exports.Installer = class Installer extends BaseCommand
   #------------
 
   test_gpg : (cb) ->
-    gpg = new GPG {}
+    alt = @config.set_alt_gpg()
     log.debug "+ Installer::test_gpg"
-    await gpg.test defer err
+    await find_and_set_cmd alt, defer err, version, cmd
     if err?
       lines = []
-      if (c = @config.get_alt_cmd('gpg'))?
+      if alt?
         lines.push """
-The GPG command you specified `#{c}` wasn't found; see this page for help installing `gpg`:
+The GPG command you specified `#{alt}` wasn't found; see this page for help installing `gpg`:
 """
       else
         lines.push """
-The command `gpg` wasn't found; you need to install it. See this page for more info:
+The commands `gpg2` and `gpg` weren't found; you need to install it. See this page for more info:
 """
       lines.push """
 \t   https://keybase.io/docs/command_line/prerequisites
 """
       err = new Error lines.join("\n")
+    else
+      log.debug "| Found '#{cmd}' @ #{version}"
     log.debug "- Installer::test_gpg -> #{if err? then 'FAILED' else 'OK'}"
     cb err
 
@@ -73,14 +76,14 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
     if not err? then #noop
     else if (c = @config.get_alt_cmd('npm'))?
       err = new Error "The npm command you specified `#{c}` wasn't found"
-    else 
+    else
       err = new Error "Couldn't find an `npm` command in your path"
     log.debug "- Installer::test_npm -> #{if err? then 'FAILED' else 'OK'}"
     cb err
 
   #------------
 
-  test_npm_install : (cb) -> 
+  test_npm_install : (cb) ->
     await npm.test_install defer err, @_install_prefix
     cb err
 
@@ -95,7 +98,7 @@ The command `gpg` wasn't found; you need to install it. See this page for more i
 Welcome to keybase.io!
 
 You have successfully installed the command-line client to
-   
+
 ====>    #{colors.bold cmd}    <=======
 
 Please make sure #{colors.bold dir} is in your PATH.
@@ -104,7 +107,7 @@ If you're new to the service run:
 
      $ keybase signup        # signup for a new account
      $ keybase push          # to push your public key to the server
-         -- or --   
+         -- or --
      $ keybase gen           # generate a new key and push it
 
 If you already signed up via the Web or another keybase client, try:
@@ -129,20 +132,26 @@ more details.
     log.debug "+ Installer::run"
     cb = chain cb, @cleanup.bind(@)
     esc = make_esc cb, "Installer::run"
-    @config.set_alt_cmds()
+
+    await check_node_async null, esc defer()
+    await @test_gpg              esc defer()
+
+    @config.set_alt_npm()
     npm.set_config @config
-    await @make_install_dir    esc defer()
-    await @test_gpg            esc defer()
-    await @test_npm            esc defer()
-    await @test_npm_install    esc defer()
+
+    await @make_install_dir      esc defer()
+    await @test_npm              esc defer()
+    await @test_npm_install      esc defer()
+
     @config.set_actual_prefix @_install_prefix
-    await @config.make_tmpdir  esc defer()
-    await @config.init_keyring esc defer()
-    await @key_setup           esc defer()
-    await @get_index           esc defer()
-    await @key_upgrade         esc defer()
-    await @software_upgrade    esc defer()
-    await @welcome_message     esc defer()
+
+    await @config.make_tmpdir    esc defer()
+    await @config.init_keyring   esc defer()
+    await @key_setup             esc defer()
+    await @get_index             esc defer()
+    await @key_upgrade           esc defer()
+    await @software_upgrade      esc defer()
+    await @welcome_message       esc defer()
     log.debug "- Installer::run"
     cb null
 
