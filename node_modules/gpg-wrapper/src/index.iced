@@ -39,7 +39,7 @@ class Index
 
   constructor : () ->
     @_keys = []
-    @_lookup = 
+    @_lookup =
       email : new BucketDict()
       fingerprint : new BucketDict()
       key_id_64 : new BucketDict()
@@ -89,10 +89,12 @@ class BaseKey extends Element
   key_id_64 : () -> @_key_id_64
   fingerprint : () -> @_fingerprint
   add_fingerprint : (line) -> @_fingerprint = line.get(9)
+  is_revoked : () -> @_trust is 'r'
   to_dict : ({secret}) -> {
     fingerprint : @fingerprint(),
     key_id_64 : @key_id_64(),
-    secret : secret
+    secret : secret,
+    is_revoked : @is_revoked()
   }
 
 #==========================================================
@@ -163,7 +165,7 @@ class Ignored extends Element
 #==========================================================
 
 class Line
-  constructor : (txt, @number, @parser) -> 
+  constructor : (txt, @number, @parser) ->
     @v = txt.split(":")
     if @v.length < 2
       @warn "Bad line; expectect at least 2 fields"

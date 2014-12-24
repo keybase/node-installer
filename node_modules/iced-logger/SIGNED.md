@@ -1,16 +1,16 @@
 ##### Signed by https://keybase.io/max
 ```
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
+Version: GnuPG/MacGPG2 v2
 Comment: GPGTools - https://gpgtools.org
 
-iQEcBAABCgAGBQJTje7bAAoJEJgKPw0B/gTf2XUH/ify9gcpGpWFV00rL3hHaY8S
-Uh/KTZQ6J3kSGGqynb+Igf6p8/4JR5y+myNjtFkYV5dSdu/kR3mQAxV+nEQGSLUi
-AsBunuWGbXlnAOPRkkdw6i/DJVaokfMptouMyQzNkMLKK1yIXv4tVRPYwRbDxL8f
-8zQQe31/py5LvVleH72s01vS1h1nU0VPlHzC4zsEcJtQ94We5GdXGgThubw3PkzG
-r76RCGCOUgXbSVnYYeuDojIKWKLhqG4jvZH4yx4AuWmVdywLxzY8spiPblCTPAe6
-5FdvuUzj9VRl00ERmWukCJXkcGPPdSINvdVZN7ruMiWzvOyz8Z6WRBEtZGZO2jg=
-=VpLR
+iQEcBAABCgAGBQJUieV4AAoJEJgKPw0B/gTfkWkH/RAH+HcKFoYCZGOZ7NecAD1L
+ecUzmmU+HUkI22nKNM7H2tLa1at8Ubkux6Looi72HWf2wNZMSwOZQ+sfrWzvsmKj
+KzGMpBJEQDXcXmX4QG00wCvbhW5W7C2Oqr1wGXTstvD8xaO937OzjXUCCRSYchsj
+5cgPZ/1GPNxiy3tN7ir0Nhl7ttmK8dyMTMwVBOlv9G/JUxmj4BBYZSwBqAOp3Hj9
+KKXr85hjQNKa/uK6CoNB4ADk99Y7SmGz168JouBSwHKyFrruUysWEemoT/RWdMkS
+dSdRLWMEdScQ+WWfPsg7FaeBLWddDhyhklmQlxxYKc3aWn60seW7j6KS3G43YMw=
+=L6k8
 -----END PGP SIGNATURE-----
 
 ```
@@ -28,9 +28,9 @@ size  exec  file            contents
 1489          LICENSE       1e933ceb3f4a00ae33672d4e344f9ff26e92bc8f34bc0c7a52fd0ef257607858
 296           Makefile      bbcf957dce2d62b7bb7e767b69e97c22a1118896e3eccd2061d465127eeb5a86
 85            README.md     6bac611fa0fdfd8a5a2e4ea5a1f974f0f037589c66d2209721171b300a8cdba0
-2849          index.iced    cc102caeba23e25be63378ca161c4587835cf245c98e6780444da99493031da3
-5143          index.js      f214a61b3c64a9414f259fd457f70c961f465a1793b82fe4ef03b3886b5a5dc4
-508           package.json  02e4f51ec92673abfd1567af4e39ff66fba1130bd596c362913f66ce86d17970
+2976          index.iced    57ab21fd0aa63fbc8fe0fab1e019b83e8005accf3a3b260af8efe72673615efd
+5218          index.js      fea659c4bf10bfb1215d09a85d2cb16fbf68ee7a60ef939e0a04286d80f53fc5
+508           package.json  e39a76decff8c625ba249a2bbf05de7ab78fe921e28e5c339f1d6725f238a801
 ```
 
 #### Ignore
@@ -47,7 +47,7 @@ dropbox  # ignore .dropbox-cache and other Dropbox-related files
 kb       # ignore anything as described by .kbignore files          
 ```
 
-<!-- summarize version = 0.0.8 -->
+<!-- summarize version = 0.0.9 -->
 
 ### End signed statement
 

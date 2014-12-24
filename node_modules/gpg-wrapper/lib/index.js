@@ -188,13 +188,18 @@
       return this._fingerprint = line.get(9);
     };
 
+    BaseKey.prototype.is_revoked = function() {
+      return this._trust === 'r';
+    };
+
     BaseKey.prototype.to_dict = function(_arg) {
       var secret;
       secret = _arg.secret;
       return {
         fingerprint: this.fingerprint(),
         key_id_64: this.key_id_64(),
-        secret: secret
+        secret: secret,
+        is_revoked: this.is_revoked()
       };
     };
 
