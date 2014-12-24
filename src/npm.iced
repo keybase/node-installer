@@ -27,7 +27,7 @@ exports.npm = npm = ({args}, cb) ->
 ##-----------------------------------
 
 exports.check = check_cmd = (cb) ->
-  await npm { args : [ "version" ] }, defer err
+  await npm { args : [ "--version" ] }, defer err
   cb err
 
 ##-----------------------------------
