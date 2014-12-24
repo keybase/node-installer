@@ -1,6 +1,6 @@
 {
   "name": "keybase-installer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Trusted installer/updater for keybase",
   "scripts": {
     "test": "make test"
