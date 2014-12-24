@@ -1,4 +1,10 @@
-## 1.0.0
+## 1.0.1 (2014-12-23)
+
+Bugfixes:
+  - Close #66
+  - upgrade versions to solve dep problems
+
+## 1.0.0 (2014-09-23)
 
 Features:
 
