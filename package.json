@@ -27,7 +27,7 @@
     "keybase-path": "^0.0.15",
     "pgp-utils": ">=0.0.8",
     "progress": "1.1.3",
-    "request": "^2.34.0",
+    "request": "^2.58.0",
     "semver": ">=1"
   },
   "devDependencies": {
