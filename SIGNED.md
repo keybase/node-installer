@@ -1,15 +1,15 @@
-##### Signed by https://keybase.io/max
+##### Signed by https://keybase.io/oconnor663
 ```
 -----BEGIN PGP SIGNATURE-----
-Comment: GPGTools - https://gpgtools.org
+Version: GnuPG v2
 
-iQEcBAABCgAGBQJVlFfZAAoJEJgKPw0B/gTfS0sIAInPN5y9o4WCekoiRTl7Rme2
-UQwEuBGiyi2bUI1j6Bp/HYmsc6XtmDMH7/ThSjfyUmdy7DH1Rg3ZqdXj1wj6/p/G
-axWNCrw1GmtxkobiRVexgOo18Rk6rQSzM74jj0WgGTsTvNa9fG4lP2XxBnz0t6Lq
-lkvoEf1sfAwVf75uwoKyn/PYvr3qR8n4Nwx1P9qqf2hfBF+rfMe3jLE7hF4HUOek
-TDXR3BkgtYVuBcR6rKEmpyK9gJzMeI4uMuMr2K0SAqJbBbvqycP5QuX9fuZEI2ZQ
-OcuGjx8ZwXbTuUXk4O18Um//Tp9V7TXGiwIH5O0U11S5y/RbPIoo3cl/f+Hk91U=
-=OjbJ
+iQEcBAABAgAGBQJVsPgVAAoJEHGHa2itSC0yfVkH/2rhowoqrt6CByUNtSv/m0Hm
+5GjKxjLVD4Z/LG/l5BRH9O9zhEBEKb17FJskITt77c9QO1i16fJJdENgrNmemhkc
+tWYVEPw/IRBj7zCRxaNIslllOxmucs3mheP4HjybaIfjLCEBD5rNs8VqVV/aXn60
+UrL3lFENfcfstEM8N0+9MbIo+HVFCyGGSCn37jpc3nW0RltQ384IUB3Ftnj5anne
+iPovbJawADMbq/mQlzsyWoJxe9Uhceo2lDvZbSgPVmxtV2+r6TnNoZpgshOCu48B
+SZyhg8l4inMhfGy4uajbKTOQcJgGKy+uNJjTt5h9ZXVt9RSvKuwIU4OaOATeBPI=
+=VJUC
 -----END PGP SIGNATURE-----
 
 ```
@@ -24,7 +24,7 @@ OcuGjx8ZwXbTuUXk4O18Um//Tp9V7TXGiwIH5O0U11S5y/RbPIoo3cl/f+Hk91U=
 size    exec  file                                         contents                                                                                                                         
               ./                                                                                                                                                                            
 128             .gitignore                                 1bf0a9015a4168fb8465cfbefac4faab8a002bed9ca518b425bc2004db93d3dd                                                                 
-5294            CHANGELOG.md                               489590d17e49ed636cc5d44a35d79d93c9e9901044d66758ed5b426efc899ef0                                                                 
+5351            CHANGELOG.md                               182c02fc601300db4eecbc0b6b1824fe554c4e12dd08a49eba2a801257dc0239                                                                 
 1483            LICENSE                                    333be7050513d91d9e77ca9acb4a91261721f0050209636076ed58676bfc643d                                                                 
 642             Makefile                                   4649d03c975694813262b9b31c05a70a7af8c9e57e529ea7cb4f35e81af384d9                                                                 
 264             README.md                                  435aa83861bd026f829d08099649976d447587ddcbd79324e8479f0fb954269b                                                                 
@@ -223,12 +223,12 @@ size    exec  file                                         contents
 1482                LICENSE                                9395652c11696e9a59ba0eac2e2cb744546b11f9a858997a02701ca91068d867                                                                 
 334                 Makefile                               46ef2af0d44ee236eaee20196dd2301b83e55517d3a163abdc5e9e40a8b0c0f3                                                                 
 57                  README.md                              eba23a2d29ac9116c43978735933bee668cc87c8e6dbe7314a706025f5086fa8                                                                 
-2591                SIGNED.md                              6b564e067baa2ccc116af8eef687f16520fe10245aee13f989a41d278f5897e4                                                                 
+2551                SIGNED.md                              0c26770d4402d4d95fccfc6df1350739559a43621d0f027266ad11fc71d9aa64                                                                 
                     lib/                                                                                                                                                                    
-6891                  main.js                              b46b3306b91345fe1925b502e2c572244d68c61e51b156709b58e279f539cadb                                                                 
-1350                package.json                           6799adbe112c52bb79a647cf4dd41c1bff4b51f14a78796bde1f020af4f52e57                                                                 
+6913                  main.js                              5f596e364b6ef4c22a13ae8cd4e25e4a0701cfd9755ba1abccabb559249053d9                                                                 
+1421                package.json                           a11fe8267641270b5382963ae216bd2620a7d130207fbac1daf5479381c97037                                                                 
                     src/                                                                                                                                                                    
-3538                  main.iced                            bb9510b75a3c9462b8a07f091308cab8b42a93d7667cbb4e4dd41f6776a5db81                                                                 
+3559                  main.iced                            41a5ebb6abf4c0413da1c0b4a4ff8c30e6e9a92f5c0647b72432413c7cf31c12                                                                 
                   pgp-utils/                                                                                                                                                                
 109                 .npmignore                             ec278daeb8f83cac2579d262b92ee6d7d872c4d1544e881ba515d8bcc05361ab                                                                 
 1487                CHANGELOG.md                           cc232ad3765b99333d9cdba90bb54f0de00e2f87845dfc6c809cbdd94866b92a                                                                 
@@ -937,7 +937,7 @@ size    exec  file                                         contents
 23013                 index.js                             6a36b5934d9a1222e7a9f3a397da4d01c55c2af367f1b1b592ae750bbad5d874                                                                 
 5234                  ltr.js                               8870bcface5b01e7b4109416a3d9a969795e7ffb2cab62d71c3ce6bc3accf380                                                                 
 645                   no-module.js                         465486b146f970dc428fc13da0103cd09dd899acd0dc493451ee6b1c9b2d49d9                                                                 
-1278            package.json                               d9bfac25c2559588bcc5b3376eced0dcdcf146a5f306c203d8dff2879df3a7ad                                                                 
+1279            package.json                               5dda3e47a52ba50b9e082c98c5cb87c8ae5b9febd61661bdf2a17452c4ab592a                                                                 
                 sandbox/                                                                                                                                                                    
 327               gen-keybase-v1.batch                     a3936fe92b8463c335b66c4369aa9e93b0c04ac41ec211d1aa75be98c8a16cb6                                                                 
 327               gen-keybase-v2.batch                     e01176f42bcb06fea1dca9ea1a1e2f4748a6e8af39e5c32d902d07fd776a9d1a                                                                 
