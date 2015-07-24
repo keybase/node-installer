@@ -1,13 +1,13 @@
 #!/bin/sh
 
 if [ "$NODE" = "" ] ; then
-	which node > /dev/null
-	if [ $? -eq 0 ] ; then NODE=node; fi
+	which nodejs > /dev/null
+	if [ $? -eq 0 ] ; then NODE=nodejs; fi
 fi
 
 if [ "$NODE" = "" ] ; then
-	which nodejs > /dev/null
-	if [ $? -eq 0 ] ; then NODE=nodejs; fi
+	which node > /dev/null
+	if [ $? -eq 0 ] ; then NODE=node; fi
 fi
 
 if [ "$NODE" = "" ]; then
